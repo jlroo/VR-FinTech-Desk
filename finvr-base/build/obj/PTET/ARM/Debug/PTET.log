@@ -1,0 +1,7 @@
+﻿  pch.cpp
+  App.cpp
+  Main.cpp
+  UnityGenerated.cpp
+\\ad.uillinois.edu\engr-ews\rbp3\Desktop\finvr-base\PTET\App.cpp(26,1): warning C4973: 'Windows::UI::ViewManagement::IApplicationView2::SuppressSystemOverlays::set': marked as deprecated
+\\ad.uillinois.edu\engr-ews\rbp3\Desktop\finvr-base\PTET\App.cpp(26,1): message : Message: 'Use the TryEnterFullScreen method and IsFullScreenMode property instead of SuppressSystemOverlays. For more info, see MSDN.'
+LINK : fatal error LNK1104: cannot open file '\\ad.uillinois.edu\engr-ews\rbp3\Desktop\finvr-base\build\bin\ARM\Debug\GameAssembly.lib'
