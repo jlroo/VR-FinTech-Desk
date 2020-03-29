@@ -5,9 +5,67 @@
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace HoloToolkit.MRDL.PeriodicTable
 {
+
+    [System.Serializable] 
+    class CompanyName { 
+      public string name;
+    }
+
+    [System.Serializable]
+    class CompanyNews {
+      public string title;
+      public string url;
+      // TODO not sure if we want to store anything else 
+    }
+
+    // All news pertaining to a company
+    [System.Serializable]
+    class AllNews {
+      public List<CompanyNews> allNews;
+
+      public static AllNews FromJSON(string json) {
+          return JsonUtility.FromJson<AllNews>(json);
+      }
+    }
+
+    // <> Adjusted Time Series
+    [System.Serializable]
+    class CompanyStock {
+      public string date;
+
+      /* Example: 
+            "1. open": "94.6000",
+            "2. high": "113.1500",
+            "3. low": "90.5600",
+            "4. close": "108.0300",
+            "5. adjusted close": "108.0300",
+            "6. volume": "39907532",
+            "7. dividend amount": "0.0000" 
+      */
+      public string raw_data;
+      // TODO not storing metadata?
+    }
+
+    // All stock prices within a set amount of time
+    [System.Serializable]
+    class AllStock {
+      public List<CompanyStock> allStock;
+
+      public static AllStock FromJSON(string json) {
+          return JsonUtility.FromJson<AllStock>(json);
+      } 
+    } 
+
+    // [System.Serializable]
+    class CompanyData {
+      public AllNews allNews;
+      public AllStock allStock; 
+    }
+
     [System.Serializable]
     public class ElementData
     {
@@ -78,15 +136,66 @@ namespace HoloToolkit.MRDL.PeriodicTable
             InitializeData();
         }
 
+        // https://stackoverflow.com/questions/49013313/get-response-body-from-unity-web-request
+        string GetRequest(string url)
+        {
+            UnityWebRequest uwr = UnityWebRequest.Get(url);
+            uwr.SendWebRequest();
+
+            string text = "";
+            if (uwr.isNetworkError) {
+                Debug.Log("Error While Sending: " + uwr.error);
+                // Environment.Exit(1);
+            } else {
+                Debug.Log("Received: " + uwr.downloadHandler.text);
+                text = uwr.downloadHandler.text;
+            }
+            return text;
+        }
+
+        public void GetRealTimeData() {
+            // Parse the elements out of the json file
+            string COMPANY_NAMES = "JSON/companies.json"; // TODO readonly doesn't work???
+            TextAsset companyNamesAsset = Resources.Load<TextAsset>(COMPANY_NAMES);
+            CompanyName[] companyNames = JsonUtility.FromJson<CompanyName[]>(companyNamesAsset.text);
+
+            string NEWS_API_KEY = "c334b33f1acf4ba99b89dcc0bf595dd0";
+            string NEWS_DATA_URL_FRONT = "http://newsapi.org/v2/everything?q="; // Concat name
+            string NEWS_DATA_URL_BACK = "&from=2020-03-29&sortBy=popularity&apiKey=" + NEWS_API_KEY;
+            string STOCK_DATA_URL_FRONT = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol="; // Concat name 
+            string STOCK_DATA_URL_BACK = "&interval=5min&apikey=demo";
+
+            // Stores company data
+            List <CompanyData> allCompanyData = new List<CompanyData>();
+
+            // Iterate through them and make 2 API calls
+            foreach (CompanyName companyName in companyNames) {
+              string name = companyName.name;
+              string news_data = GetRequest(NEWS_DATA_URL_FRONT + name + NEWS_DATA_URL_BACK);
+              string stock_data = GetRequest(STOCK_DATA_URL_FRONT + name + STOCK_DATA_URL_BACK);
+
+              // TODO check status
+
+              // Create a new Company object
+              CompanyData companyData = new CompanyData();
+              companyData.allNews = AllNews.FromJSON(news_data);
+              companyData.allStock = AllStock.FromJSON(stock_data);
+              // TODO preprocessing????
+
+              allCompanyData.Add(companyData);  
+            }
+        }
 
         public void InitializeData()
         {
             //if (Collection.transform.childCount > 0)
             //    return;
+            GetRealTimeData();
 
-            // Parse the elements out of the json file
+            // TODO comment out later
             TextAsset asset = Resources.Load<TextAsset>("JSON/PeriodicTableJSON");
             List<ElementData> elements = ElementsData.FromJSON(asset.text).elements;
+            Debug.Log(elements.Count);
 
             Dictionary<string, Material> typeMaterials = new Dictionary<string, Material>()
         {
