@@ -1,5 +1,6 @@
 {
     "names": [
-      {"name": "AMAZON"}, {"name": "Apple Inc."}
+      {"news_name": "IBM", "stock_name": "IBM"},
+      {"news_name": "Amazon", "stock_name": "AMZN"}
     ] 
 }
