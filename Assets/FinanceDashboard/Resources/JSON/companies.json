@@ -4,6 +4,6 @@
       {"news_name": "Amazon", "stock_name": "AMZN"},
       {"news_name": "Apple", "stock_name": "AAPL"},
       {"news_name": "Facebook", "stock_name": "FB"},
-      {"news_name": "Google", "stock_name": "GOOG"},
+      {"news_name": "Google", "stock_name": "GOOG"}
     ] 
 }
