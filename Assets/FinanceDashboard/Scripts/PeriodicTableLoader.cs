@@ -16,6 +16,15 @@ namespace HoloToolkit.MRDL.PeriodicTable
     }
 
     [System.Serializable]
+    class CompanyNames {
+        public List<CompanyName> names;
+
+        public static CompanyNames FromJSON(string json) {
+            return JsonUtility.FromJson<CompanyNames>(json);
+        }
+    }
+
+    [System.Serializable]
     class CompanyNews {
       public string title;
       public string url;
@@ -147,7 +156,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
                 Debug.Log("Error While Sending: " + uwr.error);
                 // Environment.Exit(1);
             } else {
-                Debug.Log("Received: " + uwr.downloadHandler.text);
+                Debug.Log("Received text: " + uwr.downloadHandler.text);
                 text = uwr.downloadHandler.text;
             }
             return text;
@@ -155,9 +164,11 @@ namespace HoloToolkit.MRDL.PeriodicTable
 
         public void GetRealTimeData() {
             // Parse the elements out of the json file
-            string COMPANY_NAMES = "JSON/companies.json"; // TODO readonly doesn't work???
+            string COMPANY_NAMES = "JSON/companies"; 
             TextAsset companyNamesAsset = Resources.Load<TextAsset>(COMPANY_NAMES);
-            CompanyName[] companyNames = JsonUtility.FromJson<CompanyName[]>(companyNamesAsset.text);
+            if (companyNamesAsset != null) Debug.Log("not null"); else Debug.Log("null");
+            List<CompanyName> companyNames = CompanyNames.FromJSON(companyNamesAsset.text).names;
+            if (companyNames != null) Debug.Log(companyNames.Count); else Debug.Log("null");
 
             string NEWS_API_KEY = "c334b33f1acf4ba99b89dcc0bf595dd0";
             string NEWS_DATA_URL_FRONT = "http://newsapi.org/v2/everything?q="; // Concat name
@@ -168,9 +179,16 @@ namespace HoloToolkit.MRDL.PeriodicTable
             // Stores company data
             List <CompanyData> allCompanyData = new List<CompanyData>();
 
+            /*List <CompanyName> allData = new List<CompanyName>();
+            CompanyName ibmData = new CompanyName();
+            ibmData.name = "IBM";
+            allData.Add(ibmData);*/
+
             // Iterate through them and make 2 API calls
             foreach (CompanyName companyName in companyNames) {
               string name = companyName.name;
+              Debug.Log(name); 
+
               string news_data = GetRequest(NEWS_DATA_URL_FRONT + name + NEWS_DATA_URL_BACK);
               string stock_data = GetRequest(STOCK_DATA_URL_FRONT + name + STOCK_DATA_URL_BACK);
 
