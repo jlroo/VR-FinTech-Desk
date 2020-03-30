@@ -4,6 +4,7 @@
 //
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -40,7 +41,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
           return JsonUtility.FromJson<AllNews>(json);
       }
     }
-
+  
     // <> Adjusted Time Series
     [System.Serializable]
     class CompanyStock {
@@ -111,6 +112,11 @@ namespace HoloToolkit.MRDL.PeriodicTable
         }
     }
 
+public class Response
+{
+    public string result = "";
+}
+
     public class PeriodicTableLoader : MonoBehaviour
     {
         // What object to parent the instantiated elements to
@@ -145,30 +151,39 @@ namespace HoloToolkit.MRDL.PeriodicTable
             InitializeData();
         }
 
-        // https://stackoverflow.com/questions/49013313/get-response-body-from-unity-web-request
-        string GetRequest(string url)
+        // https://stackoverflow.com/questions/44682376/unity-waiting-for-http-request-to-resolve
+        private IEnumerator SendParallelApiRequest(Response res, string url)
         {
-            UnityWebRequest uwr = UnityWebRequest.Get(url);
-            uwr.SendWebRequest();
+          UnityWebRequest www = UnityWebRequest.Get(url);
+          yield return www.SendWebRequest();
 
-            string text = "";
-            if (uwr.isNetworkError) {
-                Debug.Log("Error While Sending: " + uwr.error);
-                // Environment.Exit(1);
-            } else {
-                Debug.Log("Received text: " + uwr.downloadHandler.text);
-                text = uwr.downloadHandler.text;
-            }
-            return text;
+          while (!www.isDone) {
+            yield return true;
+          }
+          if (www.isNetworkError || www.isHttpError) {
+            res.result = www.error;
+          }
+          else {
+            res.result = www.downloadHandler.text;
+          }
         }
 
-        public void GetRealTimeData() {
+        private string GetDataFromAPI(string url) {
+          Response result = new Response();
+          IEnumerator e = SendParallelApiRequest(result, url);
+
+          // blocks here until UnityWebRequest() completes
+          while (e.MoveNext()) Debug.Log("WAITING");
+          Debug.Log("completed");
+          Debug.Log(result.result);
+          return result.result;
+        }
+
+        private void GetRealTimeData() {
             // Parse the elements out of the json file
             string COMPANY_NAMES = "JSON/companies"; 
             TextAsset companyNamesAsset = Resources.Load<TextAsset>(COMPANY_NAMES);
-            if (companyNamesAsset != null) Debug.Log("not null"); else Debug.Log("null");
             List<CompanyName> companyNames = CompanyNames.FromJSON(companyNamesAsset.text).names;
-            if (companyNames != null) Debug.Log(companyNames.Count); else Debug.Log("null");
 
             string NEWS_API_KEY = "c334b33f1acf4ba99b89dcc0bf595dd0";
             string NEWS_DATA_URL_FRONT = "http://newsapi.org/v2/everything?q="; // Concat name
@@ -179,28 +194,13 @@ namespace HoloToolkit.MRDL.PeriodicTable
             // Stores company data
             List <CompanyData> allCompanyData = new List<CompanyData>();
 
-            /*List <CompanyName> allData = new List<CompanyName>();
-            CompanyName ibmData = new CompanyName();
-            ibmData.name = "IBM";
-            allData.Add(ibmData);*/
-
             // Iterate through them and make 2 API calls
             foreach (CompanyName companyName in companyNames) {
               string name = companyName.name;
               Debug.Log(name); 
 
-              string news_data = GetRequest(NEWS_DATA_URL_FRONT + name + NEWS_DATA_URL_BACK);
-              string stock_data = GetRequest(STOCK_DATA_URL_FRONT + name + STOCK_DATA_URL_BACK);
-
-              // TODO check status
-
-              // Create a new Company object
-              CompanyData companyData = new CompanyData();
-              companyData.allNews = AllNews.FromJSON(news_data);
-              companyData.allStock = AllStock.FromJSON(stock_data);
-              // TODO preprocessing????
-
-              allCompanyData.Add(companyData);  
+              string news_data = GetDataFromAPI(NEWS_DATA_URL_FRONT + name + NEWS_DATA_URL_BACK);
+              string stock_data = GetDataFromAPI(STOCK_DATA_URL_FRONT + name + STOCK_DATA_URL_BACK);
             }
         }
 
