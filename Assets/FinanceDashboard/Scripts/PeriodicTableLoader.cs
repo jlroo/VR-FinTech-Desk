@@ -118,7 +118,6 @@ namespace HoloToolkit.MRDL.PeriodicTable
                     Replace("3. Last Refreshed", "last_ref").Replace("4. Interval", "interval").
                     Replace("5. Output Size", "output_size").Replace("6. Time Zone", "time_zone"); 
         allStock.metadata = MetaData.FromJSON(JsonHelper.GetJsonObject(json, "metadata"));
-        Debug.Log("PARSED METADATA: " + allStock.metadata.toString());
 
         // Breaking JSON string into different portions to make parsing work 
         allStock.data_intervals = JsonHelper.GetJsonObject(json, "data_intervals");
@@ -247,6 +246,8 @@ namespace HoloToolkit.MRDL.PeriodicTable
         public Material MatActinide;
         public Material MatLanthanide;
 
+        private List <CompanyData> allCompanyData;
+
         private bool isFirstRun = true;
 
         private void Start()
@@ -279,7 +280,6 @@ namespace HoloToolkit.MRDL.PeriodicTable
           // blocks here until UnityWebRequest() completes
           while (e.MoveNext());
           Debug.Log("Finished");
-          Debug.Log(result.result);
           return result.result;
         }
 
@@ -300,14 +300,14 @@ namespace HoloToolkit.MRDL.PeriodicTable
             int NUM_NEWS_ARTICLES = 3; // Number of news articles to store 
 
             // Stores company data
-            List <CompanyData> allCompanyData = new List<CompanyData>();
+            allCompanyData = new List<CompanyData>();
 
             foreach (CompanyName companyName in companyNames) {
               string newsData = GetDataFromAPI(NEWS_DATA_URL_FRONT + companyName.news_name + NEWS_DATA_URL_BACK);
               string stockData = GetDataFromAPI(STOCK_DATA_URL_FRONT + companyName.stock_name + STOCK_DATA_URL_BACK);
 
               CompanyData companyData = new CompanyData(companyName.news_name, newsData, stockData, companyNames.Count);
-              Debug.Log(companyData.toString());
+              Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
               allCompanyData.Add(companyData);
             }
         }
@@ -319,9 +319,9 @@ namespace HoloToolkit.MRDL.PeriodicTable
             GetRealTimeData();
 
             // TODO comment out later
-            TextAsset asset = Resources.Load<TextAsset>("JSON/PeriodicTableJSON");
-            List<ElementData> elements = ElementsData.FromJSON(asset.text).elements;
-            Debug.Log(elements.Count);
+            //TextAsset asset = Resources.Load<TextAsset>("JSON/PeriodicTableJSON");
+            //List<CompanyData> elements = ElementsData.FromJSON(asset.text).elements;
+            //Debug.Log(elements.Count);
 
             Dictionary<string, Material> typeMaterials = new Dictionary<string, Material>()
         {
@@ -341,12 +341,12 @@ namespace HoloToolkit.MRDL.PeriodicTable
             if (isFirstRun == true)
             {
                 // Insantiate the element prefabs in their correct locations and with correct text
-                foreach (ElementData element in elements)
-                {
-                    GameObject newElement = Instantiate<GameObject>(ElementPrefab, Parent);
-                    newElement.GetComponentInChildren<Element>().SetFromElementData(element, typeMaterials);
-                    newElement.transform.localPosition = new Vector3(element.xpos * ElementSeperationDistance - ElementSeperationDistance * 18 / 2, ElementSeperationDistance * 9 - element.ypos * ElementSeperationDistance, 2.0f);
-                    newElement.transform.localRotation = Quaternion.identity;
+                foreach (CompanyData company in allCompanyData) {
+                    GameObject newCompany = Instantiate<GameObject>(ElementPrefab, Parent);
+                    // NOTE don't rename Element just yet 
+                    newCompany.GetComponentInChildren<Element>().SetFromElementData(company, typeMaterials);
+                    newCompany.transform.localPosition = new Vector3(company.xpos * ElementSeperationDistance - ElementSeperationDistance * 18 / 2, ElementSeperationDistance * 9 - company.ypos * ElementSeperationDistance, 2.0f);
+                    newCompany.transform.localRotation = Quaternion.identity;
                 }
 
                 isFirstRun = false;
@@ -357,8 +357,8 @@ namespace HoloToolkit.MRDL.PeriodicTable
                 // Update position and data of existing element objects
                 foreach(Transform existingElementObject in Parent)
                 {
-                    existingElementObject.parent.GetComponentInChildren<Element>().SetFromElementData(elements[i], typeMaterials);
-                    existingElementObject.localPosition = new Vector3(elements[i].xpos * ElementSeperationDistance - ElementSeperationDistance * 18 / 2, ElementSeperationDistance * 9 - elements[i].ypos * ElementSeperationDistance, 2.0f);
+                    existingElementObject.parent.GetComponentInChildren<Element>().SetFromElementData(allCompanyData[i], typeMaterials);
+                    existingElementObject.localPosition = new Vector3(allCompanyData[i].xpos * ElementSeperationDistance - ElementSeperationDistance * 18 / 2, ElementSeperationDistance * 9 - allCompanyData[i].ypos * ElementSeperationDistance, 2.0f);
                     existingElementObject.localRotation = Quaternion.identity;
                     i++;
                 }
