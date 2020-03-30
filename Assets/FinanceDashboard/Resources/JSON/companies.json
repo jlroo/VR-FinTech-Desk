@@ -1,6 +1,9 @@
 {
     "names": [
       {"news_name": "IBM", "stock_name": "IBM"},
-      {"news_name": "Amazon", "stock_name": "AMZN"}
+      {"news_name": "Amazon", "stock_name": "AMZN"},
+      {"news_name": "Apple", "stock_name": "AAPL"},
+      {"news_name": "Facebook", "stock_name": "FB"},
+      {"news_name": "Google", "stock_name": "GOOG"},
     ] 
 }
