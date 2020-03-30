@@ -147,7 +147,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
 
       // Need to compute ypos using the number of companies we're displaying (I think) 
       public int ypos;
-      public static int yPosCurrVal = 1; // 1 - x inclusive
+      public static int yPosCurrVal = 5; // 5 - x inclusive
       public static int yPosCounter = 0; // # of instances of CompanyData with yPos == yPosCurrVal
 
       public CompanyData(string name, string newsJson, string stockJson, int numCompanies) {

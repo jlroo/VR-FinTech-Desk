@@ -4,8 +4,8 @@
       {"news_name": "Amazon", "stock_name": "AMZN"},
       {"news_name": "Apple", "stock_name": "AAPL"},
       {"news_name": "Facebook", "stock_name": "FB"},
-      {"news_name": "Google", "stock_name": "GOOG"},
       {"news_name": "Snapchat", "stock_name": "SNAP"},
+      {"news_name": "Google", "stock_name": "GOOG"},
       {"news_name": "Uber", "stock_name": "UBER"},
       {"news_name": "Lyft", "stock_name": "LYFT"},
       {"news_name": "Beyond Meat", "stock_name": "BYND"},
@@ -32,6 +32,11 @@
       {"news_name": "Oracle", "stock_name": "ORCL"},
       {"news_name": "Macy's", "stock_name": "M"},
       {"news_name": "Chipotle", "stock_name": "CMG"},
-      {"news_name": "Pfizer", "stock_name": "PFE"}
+      {"news_name": "Pfizer", "stock_name": "PFE"},
+      {"news_name": "Tesla", "stock_name": "TSLA"},
+      {"news_name": "Intel", "stock_name": "INTC"},
+      {"news_name": "Zillow", "stock_name": "Z"},
+      {"news_name": "Boeing", "stock_name": "BA"},
+      {"news_name": "Grainger", "stock_name": "GWW"}
     ] 
 }
