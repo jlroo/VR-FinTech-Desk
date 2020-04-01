@@ -40,7 +40,12 @@ namespace HoloToolkit.MRDL.PeriodicTable
       public string title;
       public string url;
       // TODO is there anything else we want to store?
-      
+     
+      public CompanyNews() {
+        title = "TITLE";
+        url = "URL";
+      }
+  
       public string toString() {
         StringBuilder dataBuilder = new StringBuilder();
         dataBuilder.Append("Title: ");
@@ -56,6 +61,13 @@ namespace HoloToolkit.MRDL.PeriodicTable
     public class AllNews {
       public List<CompanyNews> articles;
       public static int NUM_NEWS_ARTICLES = 3; // Number of news articles to store 
+
+      public AllNews () {
+        articles = new List<CompanyNews>();
+        for (int i = 0; i < 10; i++) {
+          articles.Add(new CompanyNews());
+        }
+      }
 
       public static AllNews FromJSON(string json) {
         AllNews allNews = JsonUtility.FromJson<AllNews>(json);
@@ -84,6 +96,15 @@ namespace HoloToolkit.MRDL.PeriodicTable
       public string output_size;
       public string time_zone;
 
+      public MetaData() {
+        info = "INFO";
+        symbol = "SYMBOL";
+        last_ref = "LAST_REF";
+        interval = "INTERVAL";
+        output_size = "OUTPUT_SIZE";
+        time_zone = "TIME_ZONE";
+      }
+
       public static MetaData FromJSON(string json) {
         return JsonUtility.FromJson<MetaData>(json);
       }
@@ -104,6 +125,11 @@ namespace HoloToolkit.MRDL.PeriodicTable
       // because the data returned has timestamps as keys (meaning that all the keys
       // are different and we can't serach by keys) 
       public string data_intervals; 
+      
+      public AllStock() {
+        metadata = new MetaData();
+        data_intervals = "DUMMY_INTERVAL"; // TODO turn into real json data for graph gen!!
+      }
 
       public static AllStock FromJSON(string json) {
         // NOTE must modify if we change the time series
@@ -150,16 +176,25 @@ namespace HoloToolkit.MRDL.PeriodicTable
       public static int yPosCurrVal = 5; // 5 - x inclusive
       public static int yPosCounter = 0; // # of instances of CompanyData with yPos == yPosCurrVal
 
+      public CompanyData(int numCompanies) { 
+        this.name = "DUMMY_COMPANY";
+        allNews = new AllNews();
+        allStock = new AllStock();
+        setXYPositions(numCompanies);
+      }
+
       public CompanyData(string name, string newsJson, string stockJson, int numCompanies) {
         this.name = name;
-
         allNews = AllNews.FromJSON(newsJson);
         allStock = AllStock.FromJSON(stockJson);
-        
+        setXYPositions(numCompanies);  
+      }
+
+      private void setXYPositions(int numCompanies) {
         xpos = xPosCurrVal;
         xPosCurrVal++;
-        if (xPosCurrVal == MAX_XPOS + 1) { 
-          xPosCurrVal = 1; 
+        if (xPosCurrVal == MAX_XPOS + 1) {
+          xPosCurrVal = 1;
         }
 
         // Compute the # of ypos positions we need 
@@ -173,7 +208,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
         }
         ypos = yPosCurrVal;
       }
-
+      
       public string toString() { // Debugging
         return "news: " + allNews.toString() + "\nstock: " + allStock.toString();
       }
@@ -297,18 +332,25 @@ namespace HoloToolkit.MRDL.PeriodicTable
             string STOCK_DATA_URL_FRONT = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol="; // Concat name 
             string STOCK_DATA_URL_BACK = "&interval=5min&apikey=" + STOCK_API_KEY;
 
-            int NUM_NEWS_ARTICLES = 3; // Number of news articles to store 
-
             // Stores company data
             allCompanyData = new List<CompanyData>();
 
+            int counter = 0; 
             foreach (CompanyName companyName in companyNames) {
-              string newsData = GetDataFromAPI(NEWS_DATA_URL_FRONT + companyName.news_name + NEWS_DATA_URL_BACK);
-              string stockData = GetDataFromAPI(STOCK_DATA_URL_FRONT + companyName.stock_name + STOCK_DATA_URL_BACK);
+              if (counter < 5) {
+                string newsData = GetDataFromAPI(NEWS_DATA_URL_FRONT + companyName.news_name + NEWS_DATA_URL_BACK);
+                string stockData = GetDataFromAPI(STOCK_DATA_URL_FRONT + companyName.stock_name + STOCK_DATA_URL_BACK);
 
-              CompanyData companyData = new CompanyData(companyName.news_name, newsData, stockData, companyNames.Count);
-              Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
-              allCompanyData.Add(companyData);
+                CompanyData companyData = new CompanyData(companyName.news_name, newsData, stockData, companyNames.Count);
+                Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
+                allCompanyData.Add(companyData);
+
+              } else { // Create a dummy object for now 
+                CompanyData companyData = new CompanyData(companyNames.Count);
+                allCompanyData.Add(companyData);
+                Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
+              }
+              counter++;
             }
         }
 
