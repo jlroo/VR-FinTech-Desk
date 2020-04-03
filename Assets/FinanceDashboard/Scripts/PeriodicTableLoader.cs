@@ -180,6 +180,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
       // Hard-coded because the UI is really hard-coded and we can't refactor out the category 
       // without breaking everything
       public string category;
+      public static int currKeyCounter = 1; // 1 - typeMaterials.Count
       public static int currCategoryCounter = 1; // 1 - typeMaterials.Count
 
         public string spectral_img = "spec";
@@ -199,26 +200,36 @@ namespace HoloToolkit.MRDL.PeriodicTable
         public string summary = "asdf";
         public int boil = 3;
 
-      public CompanyData(int numCompanies, int numCategories) { 
+      public CompanyData(int numCompanies, int numCategories, Dictionary<string, int> typeMaterialsCounts) { 
         this.name = "DUMMY_COMPANY";
         allNews = new AllNews();
         allStock = new AllStock();
         setXYPositions(numCompanies);
-        setCategory(numCategories);
+        setCategory(numCategories, typeMaterialsCounts);
       }
 
-      public CompanyData(string name, string newsJson, string stockJson, int numCompanies, int numCategories) {
+      public CompanyData(string name, string newsJson, string stockJson, int numCompanies, int numCategories, Dictionary<string, int> typeMaterialsCounts) {
         this.name = name;
         allNews = AllNews.FromJSON(newsJson);
         allStock = AllStock.FromJSON(stockJson);
         setXYPositions(numCompanies);  
-        setCategory(numCategories);
+        setCategory(numCategories, typeMaterialsCounts);
       }
 
-      public void setCategory(int numCategories) {
-        category = "key" + Convert.ToString(currCategoryCounter);
+      // typeMaterialsCounts
+      public void setCategory(int numCategories, Dictionary<string, int> typeMaterialsCounts) {
+        // get current key
+        category = "key" + Convert.ToString(currKeyCounter);
+
+        if ((typeMaterialsCounts[category]) == 0) {
+          currKeyCounter++; // Handles 0 case
+          category = "key" + Convert.ToString(currKeyCounter);
+        }
+
         currCategoryCounter++;
-        if (currCategoryCounter == numCategories + 1) {
+        // Debug.Log("VALUE: " + typeMaterialsCounts[category]);
+        if (currCategoryCounter == typeMaterialsCounts[category] + 1) {
+          currKeyCounter++;
           currCategoryCounter = 1;
         }
       }
@@ -243,7 +254,8 @@ namespace HoloToolkit.MRDL.PeriodicTable
       }
       
       public string toString() { // Debugging
-        return "news: " + allNews.toString() + "\nstock: " + allStock.toString() + "\nkey: " + category;
+        // return "news: " + allNews.toString() + "\nstock: " + allStock.toString() + "\nkey: " + category;
+        return "key: " + category;
       }
     }
 
@@ -348,13 +360,13 @@ namespace HoloToolkit.MRDL.PeriodicTable
         }
 
         private string GetDataFromAPI(string url) {
-          Debug.Log("URL: " + url);
+          // Debug.Log("URL: " + url);
           Response result = new Response();
           IEnumerator e = SendParallelApiRequest(result, url);
 
           // blocks here until UnityWebRequest() completes
           while (e.MoveNext());
-          Debug.Log("Finished");
+          // Debug.Log("Finished");
           return result.result;
         }
 
@@ -377,16 +389,18 @@ namespace HoloToolkit.MRDL.PeriodicTable
 
             int counter = 0; 
             foreach (CompanyName companyName in companyNames) {
+              Debug.Log("COMPANY NAME: " + companyName.news_name);
+
               if (counter < 5) {
                 string newsData = GetDataFromAPI(NEWS_DATA_URL_FRONT + companyName.news_name + NEWS_DATA_URL_BACK);
                 string stockData = GetDataFromAPI(STOCK_DATA_URL_FRONT + companyName.stock_name + STOCK_DATA_URL_BACK);
 
-                CompanyData companyData = new CompanyData(companyName.news_name, newsData, stockData, companyNames.Count, typeMaterials.Count);
+                CompanyData companyData = new CompanyData(companyName.news_name, newsData, stockData, companyNames.Count, typeMaterials.Count, typeMaterialsCounts);
                 Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
                 allCompanyData.Add(companyData);
 
               } else { // Create a dummy object for now 
-                CompanyData companyData = new CompanyData(companyNames.Count, typeMaterials.Count);
+                CompanyData companyData = new CompanyData(companyNames.Count, typeMaterials.Count, typeMaterialsCounts);
                 allCompanyData.Add(companyData);
                 Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
               }
