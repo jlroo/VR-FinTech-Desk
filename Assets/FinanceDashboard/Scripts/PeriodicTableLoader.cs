@@ -176,18 +176,51 @@ namespace HoloToolkit.MRDL.PeriodicTable
       public static int yPosCurrVal = 5; // 5 - x inclusive
       public static int yPosCounter = 0; // # of instances of CompanyData with yPos == yPosCurrVal
 
-      public CompanyData(int numCompanies) { 
+      // Value from 1 - typeMaterials.Count
+      // Hard-coded because the UI is really hard-coded and we can't refactor out the category 
+      // without breaking everything
+      public string category;
+      public static int currCategoryCounter = 1; // 1 - typeMaterials.Count
+
+        public string spectral_img = "spec";
+        public string named_by = "asdf";
+        public float density = 1.0f;
+        public string color = "asfd";
+        public float molar_heat = 1.0f;
+        public string symbol = "asfd";
+        public string discovered_by = "asdf";
+        public string appearance = "asdf";
+        public float atomic_mass = 1.0f;
+        public float melt = 1.0f;
+        public string number = "asdf";
+        public string source = "asdf";
+        public int period = 2;
+        public string phase = "asdf";
+        public string summary = "asdf";
+        public int boil = 3;
+
+      public CompanyData(int numCompanies, int numCategories) { 
         this.name = "DUMMY_COMPANY";
         allNews = new AllNews();
         allStock = new AllStock();
         setXYPositions(numCompanies);
+        setCategory(numCategories);
       }
 
-      public CompanyData(string name, string newsJson, string stockJson, int numCompanies) {
+      public CompanyData(string name, string newsJson, string stockJson, int numCompanies, int numCategories) {
         this.name = name;
         allNews = AllNews.FromJSON(newsJson);
         allStock = AllStock.FromJSON(stockJson);
         setXYPositions(numCompanies);  
+        setCategory(numCategories);
+      }
+
+      public void setCategory(int numCategories) {
+        category = "key" + Convert.ToString(currCategoryCounter);
+        currCategoryCounter++;
+        if (currCategoryCounter == numCategories + 1) {
+          currCategoryCounter = 1;
+        }
       }
 
       private void setXYPositions(int numCompanies) {
@@ -210,7 +243,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
       }
       
       public string toString() { // Debugging
-        return "news: " + allNews.toString() + "\nstock: " + allStock.toString();
+        return "news: " + allNews.toString() + "\nstock: " + allStock.toString() + "\nkey: " + category;
       }
     }
 
@@ -281,7 +314,14 @@ namespace HoloToolkit.MRDL.PeriodicTable
         public Material MatActinide;
         public Material MatLanthanide;
 
+        // Stores list of parsed company data from APIs
         private List <CompanyData> allCompanyData;
+
+        private Dictionary<string, Material> typeMaterials;
+        // This is a HARD-CODED dictionary that stores the frequencies of categories corresponding 
+        // to the new keys in the typeMaterials dict 
+        // DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING 
+        private Dictionary<string, int> typeMaterialsCounts;
 
         private bool isFirstRun = true;
 
@@ -341,12 +381,12 @@ namespace HoloToolkit.MRDL.PeriodicTable
                 string newsData = GetDataFromAPI(NEWS_DATA_URL_FRONT + companyName.news_name + NEWS_DATA_URL_BACK);
                 string stockData = GetDataFromAPI(STOCK_DATA_URL_FRONT + companyName.stock_name + STOCK_DATA_URL_BACK);
 
-                CompanyData companyData = new CompanyData(companyName.news_name, newsData, stockData, companyNames.Count);
+                CompanyData companyData = new CompanyData(companyName.news_name, newsData, stockData, companyNames.Count, typeMaterials.Count);
                 Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
                 allCompanyData.Add(companyData);
 
               } else { // Create a dummy object for now 
-                CompanyData companyData = new CompanyData(companyNames.Count);
+                CompanyData companyData = new CompanyData(companyNames.Count, typeMaterials.Count);
                 allCompanyData.Add(companyData);
                 Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
               }
@@ -358,37 +398,67 @@ namespace HoloToolkit.MRDL.PeriodicTable
         {
             //if (Collection.transform.childCount > 0)
             //    return;
-            GetRealTimeData();
 
             // TODO comment out later
             //TextAsset asset = Resources.Load<TextAsset>("JSON/PeriodicTableJSON");
-            //List<CompanyData> elements = ElementsData.FromJSON(asset.text).elements;
+            //List<ElementData> elements = ElementsData.FromJSON(asset.text).elements;
             //Debug.Log(elements.Count);
 
-            Dictionary<string, Material> typeMaterials = new Dictionary<string, Material>()
+            // NOTE the dictionary here HARD CODES THE POSITIONS OF THE ELEMENTS and cannot be
+            // changed in any way. Notice that I just have dummy values for the keys but you 
+            // CANNOT delete any of the keys without breaking everything
+            typeMaterials = new Dictionary<string, Material>()
         {
-            { "alkali metal", MatAlkaliMetal },
-            { "alkaline earth metal", MatAlkalineEarthMetal },
-            { "transition metal", MatTransitionMetal },
-            { "metalloid", MatMetalloid },
-            { "diatomic nonmetal", MatDiatomicNonmetal },
-            { "polyatomic nonmetal", MatPolyatomicNonmetal },
-            { "post-transition metal", MatPostTransitionMetal },
-            { "noble gas", MatNobleGas },
-            { "actinide", MatActinide },
-            { "lanthanide", MatLanthanide },
+            { "key1", MatAlkaliMetal },
+            { "key2", MatAlkalineEarthMetal },
+            { "key3", MatTransitionMetal },
+            { "key4", MatMetalloid },
+            { "key5", MatDiatomicNonmetal },
+            { "key6", MatPolyatomicNonmetal },
+            { "key7", MatPostTransitionMetal },
+            { "key8", MatNobleGas },
+            { "key9", MatActinide },
+            { "key10", MatLanthanide }
         };
+
+            /** (Based off of original JSON) 
+              [alkali metal] 1
+              [alkaline earth metal] 1
+              [transition metal] 11
+              [metalloid] 6
+              [diatomic nonmetal] 1
+              [polyatomic nonmetal] 0
+              [post-transition metal] 3
+              [noble gas] 3
+              [actinide] 4
+              [lanthanide] 7
+            */
+            typeMaterialsCounts = new Dictionary<string, int>()
+        {
+            { "key1", 1 },
+            { "key2", 1 },
+            { "key3", 11 },
+            { "key4", 6 },
+            { "key5", 1 },
+            { "key6", 0 },
+            { "key7", 3 },
+            { "key8", 3 },
+            { "key9", 4 },
+            { "key10", 7 }
+        };
+
+            GetRealTimeData();
 
             // TODO change elements to CompanyData
             if (isFirstRun == true)
             {
                 // Insantiate the element prefabs in their correct locations and with correct text
-                foreach (CompanyData company in allCompanyData) {
-                    GameObject newCompany = Instantiate<GameObject>(ElementPrefab, Parent);
-                    // NOTE don't rename Element just yet 
-                    newCompany.GetComponentInChildren<Element>().SetFromElementData(company, typeMaterials);
-                    newCompany.transform.localPosition = new Vector3(company.xpos * ElementSeperationDistance - ElementSeperationDistance * 18 / 2, ElementSeperationDistance * 9 - company.ypos * ElementSeperationDistance, 2.0f);
-                    newCompany.transform.localRotation = Quaternion.identity;
+                foreach (CompanyData element in allCompanyData)
+                {
+                    GameObject newElement = Instantiate<GameObject>(ElementPrefab, Parent);
+                    newElement.GetComponentInChildren<Element>().SetFromElementData(element, typeMaterials);
+                    newElement.transform.localPosition = new Vector3(element.xpos * ElementSeperationDistance - ElementSeperationDistance * 18 / 2, ElementSeperationDistance * 9 - element.ypos * ElementSeperationDistance, 2.0f);
+                    newElement.transform.localRotation = Quaternion.identity;
                 }
 
                 isFirstRun = false;
@@ -411,3 +481,4 @@ namespace HoloToolkit.MRDL.PeriodicTable
         }
     }
 }
+

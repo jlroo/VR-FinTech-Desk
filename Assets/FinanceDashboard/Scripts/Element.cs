@@ -136,40 +136,37 @@ namespace HoloToolkit.MRDL.PeriodicTable
         public void SetFromElementData(CompanyData data, Dictionary<string, Material> typeMaterials)
         {
             this.data = data;
-            /*
             ElementNumber.text = data.number;
             ElementName.text = data.symbol;
             ElementNameDetail.text = data.name;
-            */
 
             ElementDescription.text = data.allNews.articles[0].toString(); // TODO change to news
-            /*
             DataAtomicNumber.text = data.number;
             DataAtomicWeight.text = data.atomic_mass.ToString();
             DataMeltingPoint.text = data.melt.ToString();
             DataBoilingPoint.text = data.boil.ToString();
-            */
+            
             // Set up our materials
-            /*if (!typeMaterials.TryGetValue(data.category.Trim(), out dimMaterial))
+            if (!typeMaterials.TryGetValue(data.category.Trim(), out dimMaterial))
             {
                 Debug.Log("Couldn't find " + data.category.Trim() + " in element " + data.name);
-            }*/
+            }
 
             // Create a new highlight material and add it to the dictionary so other can use it
-            //string highlightKey = data.category.Trim() + " highlight";
-            /*if (!typeMaterials.TryGetValue(highlightKey, out highlightMaterial))
-            {*/
+            string highlightKey = data.category.Trim() + " highlight";
+            if (!typeMaterials.TryGetValue(highlightKey, out highlightMaterial))
+            {
                 highlightMaterial = new Material(dimMaterial);
                 highlightMaterial.color = highlightMaterial.color * 1.5f;
-                //typeMaterials.Add(highlightKey, highlightMaterial);
-            //////////////////}
+                typeMaterials.Add(highlightKey, highlightMaterial);
+            }
 
             Dim();
-
-            /*Atom.NumElectrons = int.Parse(data.number);
+           
+            Atom.NumElectrons = int.Parse(data.number);
             Atom.NumNeutrons = (int)data.atomic_mass / 2;
             Atom.NumProtons = (int)data.atomic_mass / 2;
-            Atom.Radius = data.atomic_mass / 157 * 0.02f;//TEMP*/
+            Atom.Radius = data.atomic_mass / 157 * 0.02f;//TEMP
 
             foreach (Renderer infoPanel in InfoPanels)
             {
@@ -184,3 +181,4 @@ namespace HoloToolkit.MRDL.PeriodicTable
         }
     }
 }
+
