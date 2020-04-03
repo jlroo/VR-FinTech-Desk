@@ -2,6 +2,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 //
+
+using ChartAndGraph; //Chart_And_Graph;
+
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -33,13 +36,16 @@ namespace HoloToolkit.MRDL.PeriodicTable
         public Atom Atom;
 
         [HideInInspector]
-        public ElementData data;
+        public CompanyData data;
 
         private BoxCollider boxCollider;
         private Material highlightMaterial;
         private Material dimMaterial;
         private Material clearMaterial;
         private PresentToPlayer present;
+
+        public ChartAndGraph.GraphChart graph; 
+        public static int counter = 0;
 
         public void SetActiveElement()
         {
@@ -54,6 +60,11 @@ namespace HoloToolkit.MRDL.PeriodicTable
 
         public void Start()
         {
+            Debug.Log("COUNTER: " + counter);
+            counter++;
+            graph = GetComponent<ChartAndGraph.GraphChart>();
+            if (graph == null) Debug.Log("GRAPH IS NULL"); Debug.Log("GRAPH ISN'T NULL");
+
             // Turn off our animator until it's needed
             GetComponent<Animator>().enabled = false;
             BoxRenderer.enabled = true;
@@ -133,20 +144,19 @@ namespace HoloToolkit.MRDL.PeriodicTable
         /**
          * Set the display data for this element based on the given parsed JSON data
          */
-        public void SetFromElementData(ElementData data, Dictionary<string, Material> typeMaterials)
+        public void SetFromElementData(CompanyData data, Dictionary<string, Material> typeMaterials)
         {
             this.data = data;
+            ElementName.text = data.name;
 
-            ElementNumber.text = data.number;
-            ElementName.text = data.symbol;
-            ElementNameDetail.text = data.name;
+            ElementDescription.text = data.allNews.articles[0].toString(); // TODO change to news
 
-            ElementDescription.text = data.summary;
-            DataAtomicNumber.text = data.number;
+            // EVERYTHING IN THE RHS
+            // DataAtomicNumber.text = data.number;
             DataAtomicWeight.text = data.atomic_mass.ToString();
             DataMeltingPoint.text = data.melt.ToString();
             DataBoilingPoint.text = data.boil.ToString();
-
+ 
             // Set up our materials
             if (!typeMaterials.TryGetValue(data.category.Trim(), out dimMaterial))
             {
@@ -163,11 +173,11 @@ namespace HoloToolkit.MRDL.PeriodicTable
             }
 
             Dim();
-
-            Atom.NumElectrons = int.Parse(data.number);
+           
+            /*Atom.NumElectrons = int.Parse(data.number);
             Atom.NumNeutrons = (int)data.atomic_mass / 2;
             Atom.NumProtons = (int)data.atomic_mass / 2;
-            Atom.Radius = data.atomic_mass / 157 * 0.02f;//TEMP
+            Atom.Radius = data.atomic_mass / 157 * 0.02f;//TEMP*/
 
             foreach (Renderer infoPanel in InfoPanels)
             {
@@ -182,3 +192,4 @@ namespace HoloToolkit.MRDL.PeriodicTable
         }
     }
 }
+
