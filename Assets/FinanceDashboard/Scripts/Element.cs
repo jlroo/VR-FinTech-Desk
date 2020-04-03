@@ -33,7 +33,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
         public Atom Atom;
 
         [HideInInspector]
-        public ElementData data;
+        public CompanyData data;
 
         private BoxCollider boxCollider;
         private Material highlightMaterial;
@@ -133,20 +133,19 @@ namespace HoloToolkit.MRDL.PeriodicTable
         /**
          * Set the display data for this element based on the given parsed JSON data
          */
-        public void SetFromElementData(ElementData data, Dictionary<string, Material> typeMaterials)
+        public void SetFromElementData(CompanyData data, Dictionary<string, Material> typeMaterials)
         {
             this.data = data;
-
-            ElementNumber.text = data.number;
-            ElementName.text = data.symbol;
+            // ElementNumber.text = data.number;
+            ElementName.text = data.name;
             ElementNameDetail.text = data.name;
 
-            ElementDescription.text = data.summary;
-            DataAtomicNumber.text = data.number;
+            ElementDescription.text = data.allNews.articles[0].toString(); // TODO change to news
+            // DataAtomicNumber.text = data.number;
             DataAtomicWeight.text = data.atomic_mass.ToString();
             DataMeltingPoint.text = data.melt.ToString();
             DataBoilingPoint.text = data.boil.ToString();
-
+            
             // Set up our materials
             if (!typeMaterials.TryGetValue(data.category.Trim(), out dimMaterial))
             {
@@ -163,11 +162,11 @@ namespace HoloToolkit.MRDL.PeriodicTable
             }
 
             Dim();
-
-            Atom.NumElectrons = int.Parse(data.number);
+           
+            /*Atom.NumElectrons = int.Parse(data.number);
             Atom.NumNeutrons = (int)data.atomic_mass / 2;
             Atom.NumProtons = (int)data.atomic_mass / 2;
-            Atom.Radius = data.atomic_mass / 157 * 0.02f;//TEMP
+            Atom.Radius = data.atomic_mass / 157 * 0.02f;//TEMP*/
 
             foreach (Renderer infoPanel in InfoPanels)
             {
@@ -182,3 +181,4 @@ namespace HoloToolkit.MRDL.PeriodicTable
         }
     }
 }
+
