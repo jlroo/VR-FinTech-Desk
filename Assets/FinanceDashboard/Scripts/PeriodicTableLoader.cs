@@ -183,41 +183,41 @@ namespace HoloToolkit.MRDL.PeriodicTable
       public static int currKeyCounter = 1; // 1 - typeMaterials.Count
       public static int currCategoryCounter = 1; // 1 - typeMaterials.Count
 
-        public string spectral_img = "spec";
-        public string named_by = "asdf";
+        public string spectral_img = "spectral";
+        public string named_by = "named_by";
         public float density = 1.0f;
-        public string color = "asfd";
+        public string color = "color";
         public float molar_heat = 1.0f;
-        public string symbol = "asfd";
-        public string discovered_by = "asdf";
-        public string appearance = "asdf";
+        // public string symbol = "asfd";
+        public string discovered_by = "disc_by";
+        public string appearance = "app";
         public float atomic_mass = 1.0f;
         public float melt = 1.0f;
-        public string number = "asdf";
-        public string source = "asdf";
+        // public string number = "num";
+        public string source = "source";
         public int period = 2;
-        public string phase = "asdf";
-        public string summary = "asdf";
+        public string phase = "phase";
+        public string summary = "summ";
         public int boil = 3;
 
-      public CompanyData(int numCompanies, int numCategories, Dictionary<string, int> typeMaterialsCounts) { 
+      public CompanyData(int numCompanies, Dictionary<string, int> typeMaterialsCounts) { 
         this.name = "DUMMY_COMPANY";
         allNews = new AllNews();
         allStock = new AllStock();
         setXYPositions(numCompanies);
-        setCategory(numCategories, typeMaterialsCounts);
+        setCategory(typeMaterialsCounts);
       }
 
-      public CompanyData(string name, string newsJson, string stockJson, int numCompanies, int numCategories, Dictionary<string, int> typeMaterialsCounts) {
+      public CompanyData(string name, string newsJson, string stockJson, int numCompanies, Dictionary<string, int> typeMaterialsCounts) {
         this.name = name;
         allNews = AllNews.FromJSON(newsJson);
         allStock = AllStock.FromJSON(stockJson);
         setXYPositions(numCompanies);  
-        setCategory(numCategories, typeMaterialsCounts);
+        setCategory(typeMaterialsCounts);
       }
 
       // typeMaterialsCounts
-      public void setCategory(int numCategories, Dictionary<string, int> typeMaterialsCounts) {
+      public void setCategory(Dictionary<string, int> typeMaterialsCounts) {
         // get current key
         category = "key" + Convert.ToString(currKeyCounter);
 
@@ -395,12 +395,12 @@ namespace HoloToolkit.MRDL.PeriodicTable
                 string newsData = GetDataFromAPI(NEWS_DATA_URL_FRONT + companyName.news_name + NEWS_DATA_URL_BACK);
                 string stockData = GetDataFromAPI(STOCK_DATA_URL_FRONT + companyName.stock_name + STOCK_DATA_URL_BACK);
 
-                CompanyData companyData = new CompanyData(companyName.news_name, newsData, stockData, companyNames.Count, typeMaterials.Count, typeMaterialsCounts);
+                CompanyData companyData = new CompanyData(companyName.news_name, newsData, stockData, companyNames.Count, typeMaterialsCounts);
                 Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
                 allCompanyData.Add(companyData);
 
               } else { // Create a dummy object for now 
-                CompanyData companyData = new CompanyData(companyNames.Count, typeMaterials.Count, typeMaterialsCounts);
+                CompanyData companyData = new CompanyData(companyNames.Count, typeMaterialsCounts);
                 allCompanyData.Add(companyData);
                 Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
               }

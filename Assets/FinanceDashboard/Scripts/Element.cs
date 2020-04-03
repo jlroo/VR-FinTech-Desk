@@ -136,12 +136,12 @@ namespace HoloToolkit.MRDL.PeriodicTable
         public void SetFromElementData(CompanyData data, Dictionary<string, Material> typeMaterials)
         {
             this.data = data;
-            ElementNumber.text = data.number;
-            ElementName.text = data.symbol;
+            // ElementNumber.text = data.number;
+            ElementName.text = data.name;
             ElementNameDetail.text = data.name;
 
             ElementDescription.text = data.allNews.articles[0].toString(); // TODO change to news
-            DataAtomicNumber.text = data.number;
+            // DataAtomicNumber.text = data.number;
             DataAtomicWeight.text = data.atomic_mass.ToString();
             DataMeltingPoint.text = data.melt.ToString();
             DataBoilingPoint.text = data.boil.ToString();
