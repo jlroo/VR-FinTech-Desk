@@ -36,7 +36,6 @@
       {"news_name": "Tesla", "stock_name": "TSLA"},
       {"news_name": "Intel", "stock_name": "INTC"},
       {"news_name": "Zillow", "stock_name": "Z"},
-      {"news_name": "Boeing", "stock_name": "BA"},
-      {"news_name": "Grainger", "stock_name": "GWW"}
+      {"news_name": "Boeing", "stock_name": "BA"}
     ] 
 }
