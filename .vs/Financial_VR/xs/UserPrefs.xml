@@ -1,0 +1,33 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/FinanceDashboard/Scripts/Element.cs">
+    <Files>
+      <File FileName="Assets/FinanceDashboard/Scripts/PeriodicTableLoader.cs" Line="115" Column="18" />
+      <File FileName="Assets/FinanceDashboard/Scripts/Element.cs" Line="153" Column="41" />
+      <File FileName="Assets/FinanceDashboard/Scripts/Atom.cs" Line="88" Column="55" />
+      <File FileName="Assets/FinanceDashboard/Scripts/PresentToPlayer.cs" Line="95" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Financial_VR" expanded="True">
+            <Node name="Assembly-CSharp" expanded="True">
+              <Node name="Assets" expanded="True">
+                <Node name="FinanceDashboard" expanded="True">
+                  <Node name="Scripts" expanded="True">
+                    <Node name="Element.cs" selected="True" />
+                  </Node>
+                </Node>
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

@@ -65,8 +65,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300000, guid: bb5f245b92ffd1840ba3de676b3b9e36, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -121,8 +119,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.Scrollbar+ScrollEvent, UnityEngine.UI, Version=1.0.0.0,
-      Culture=neutral, PublicKeyToken=null
 --- !u!1 &8049239005518419810
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,8 +182,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300000, guid: 0090fa36b85033b419f35f16ae7caa38, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -312,33 +306,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: "The <b>HoloLens</b> is a head-mounted display unit connected to an adjustable,
-    cushioned inner headband, which can tilt HoloLens up and down, as well as forward
-    and backward. To wear the unit, the user fits the HoloLens on their head, using
-    an adjustment wheel at the back of the headband to secure it around the crown,
-    supporting and distributing the weight of the unit equally for comfort, before
-    tilting the visor towards the front of the eyes.\r\nThe front of the unit houses
-    many of the sensors and related hardware, including the processors, cameras and
-    projection lenses. The visor is tinted; enclosed in the visor piece is a pair
-    of transparent combiner lenses, in which the projected images are displayed in
-    the lower half. The HoloLens must be calibrated to the interpupillary distance
-    (IPD), or accustomed vision of the user.\n\nAlong the bottom edges of the side,
-    located near the user's ears, are a pair of small, red 3D audio speakers. The
-    speakers, competing against typical sound systems, do not obstruct external sounds,
-    allowing the user to hear virtual sounds, along with the environment. Using head-related
-    transfer functions, the HoloLens generates binaural audio, which can simulate
-    spatial effects; meaning the user, virtually, can perceive and locate a sound,
-    as though it is coming from a virtual pinpoint or location.\n \r\nOn the top edge
-    are two pairs of buttons: display brightness buttons above the left ear, and volume
-    buttons above the right ear. Adjacent buttons are shaped differently\u2014one
-    concave, one convex\u2014so that the user can distinguish them by touch.\n\nAt
-    the end of the left arm is a power button and row of five, small individual LED
-    nodes, used to indicate system status, as well as for power management, indicating
-    battery level and setting power/standby mode. A USB 2.0 micro-B receptacle is
-    located along the bottom edge. A 3.5 mm audio jack is located along the bottom
-    edge of the right arm.\n                                  ***"
+  m_text: PlaceHolder Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
   m_sharedMaterial: {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217,
@@ -375,7 +343,6 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_textAlignment: 257
-  m_isAlignmentEnumConverted: 1
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -402,6 +369,7 @@ MonoBehaviour:
   m_verticalMapping: 0
   m_uvLineOffset: 0
   m_geometrySortingOrder: 0
+  m_VertexBufferAutoSizeReduction: 1
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
@@ -416,12 +384,9 @@ MonoBehaviour:
     lineCount: 87
     pageCount: 1
     materialCount: 2
-  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
-  m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
   - {fileID: 0}
@@ -559,11 +524,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98c748f3768ab714a8449b60fb9edc5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  eventsToReceive: 0
+  debounceThreshold: 0.01
   localForward: {x: 0, y: 0, z: -1}
   localUp: {x: 0, y: 1, z: 0}
   localCenter: {x: 0, y: 0, z: 0}
-  eventsToReceive: 0
-  touchableSurface: 0
   bounds: {x: 0, y: 0}
   touchableCollider: {fileID: 0}
 --- !u!1 &8049239005735869197
@@ -577,7 +542,6 @@ GameObject:
   - component: {fileID: 8049239005735869194}
   - component: {fileID: 8049239005735869193}
   - component: {fileID: 8049239005735869192}
-  - component: {fileID: 8049239005735869195}
   m_Layer: 0
   m_Name: ActiveEyeGazeRegion
   m_TagString: Untagged
@@ -624,18 +588,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1e6657bab90ac149872e5361b42ea62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  focusEnabled: 1
-  timeToTriggerDwellInSec: 5
   selectAction:
     id: 0
     description: 
     axisConstraint: 0
-  voice_select: []
-  cursor_snapToCenter: 0
-  OnLookAtStart:
+  voiceSelect: []
+  dwellTimeInSec: 0.8
+  onLookAtStart:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8049239005735869195}
+      - m_Target: {fileID: 0}
         m_MethodName: StartFocusing
         m_Mode: 1
         m_Arguments:
@@ -646,17 +608,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  WhileLookingAtTarget:
+  whileLookingAtTarget:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  OnLookAway:
+  onLookAway:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8049239005735869195}
+      - m_Target: {fileID: 0}
         m_MethodName: StopFocusing
         m_Mode: 1
         m_Arguments:
@@ -667,40 +625,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  OnDwell:
+  onDwell:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  OnSelected:
+  onSelected:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
---- !u!114 &8049239005735869195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8049239005735869197}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f817ae3dd432c8429186c2746512e39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  limitPanning: 1
-  rectTransfToNavigate: {fileID: 8049239005670084736}
-  refToViewPort: {fileID: 8049239006227516698}
-  autoGazeScrollIsActive: 1
-  scrollSpeedHorizontal: 0
-  scrollSpeedVertical: 0.3
-  minDistFromCenterForAutoScroll: {x: 0.2, y: 0.2}
-  useSkimProofing: 1
-  skimProofUpdateSpeed: 5
-  customStartPos: {x: 0, y: 0}
+  eyeCursorSnapToTargetCenter: 0
 --- !u!1 &8049239006184437437
 GameObject:
   m_ObjectHideFlags: 0
@@ -771,8 +702,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.ScrollRect+ScrollRectEvent, UnityEngine.UI, Version=1.0.0.0,
-      Culture=neutral, PublicKeyToken=null
 --- !u!222 &8049239006184437435
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -896,8 +825,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 1
   m_PreserveAspect: 0
@@ -972,8 +899,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 1
   m_PreserveAspect: 0
@@ -1028,8 +953,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.Scrollbar+ScrollEvent, UnityEngine.UI, Version=1.0.0.0,
-      Culture=neutral, PublicKeyToken=null
 --- !u!1 &8049239007233901440
 GameObject:
   m_ObjectHideFlags: 0
@@ -1093,8 +1016,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 1
   m_PreserveAspect: 0
@@ -1167,8 +1088,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_spriteAsset: {fileID: 0}
   m_material: {fileID: 0}
