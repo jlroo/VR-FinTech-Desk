@@ -31,8 +31,6 @@ namespace HoloToolkit.MRDL.PeriodicTable
         public MeshRenderer[] InfoPanels;
 
         public Atom Atom;
-        public ChartAndGraph.GraphChart graph;
-        // public GraphController graphController;
 
         [HideInInspector]
         public CompanyData data;
@@ -145,7 +143,6 @@ namespace HoloToolkit.MRDL.PeriodicTable
 
             ElementDescription.text = data.allNews.articles[0].toString(); // TODO change to news
             
-            if (graph == null) Debug.Log("GRAPH CONTROLLER IS NULL"); else Debug.Log("GRAPH CONTROLLER ISN'T NULL");
             // graphController.isChanged = true;
             // NOTE cannot create a graph programatically
             // Can create a graph script
