@@ -58,9 +58,21 @@ namespace HoloToolkit.MRDL.PeriodicTable
 
         IEnumerator PresentOverTime()
         {
-
+            
+            
+            // GameObject.Find("DUMMY_COMPANY").SetActive(false);
             if (TargetTranfsorm == null)
                 TargetTranfsorm = transform;
+
+            GameObject parent = GameObject.Find("TableParent");
+            foreach (Transform child in parent.transform)
+            {
+
+                if (child != TargetTranfsorm)
+                {
+                    child.gameObject.SetActive(false);
+                }
+            }
 
             initialPosition = transform.position;
             initialRotation = transform.rotation;
@@ -73,7 +85,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
                 cameraForward.Normalize();
             }
             Quaternion targetRotation = Quaternion.LookRotation(cameraForward, Vector3.up);
-            Vector3 targetPosition = cameraPosition + (cameraForward * PresentationDistance) + new Vector3(0.0f, -0.1f, 0.0f);
+            Vector3 targetPosition = cameraPosition + (cameraForward * 1.5f * PresentationDistance) + new Vector3(0.0f, -0.1f, 0.0f);
             inPosition = false;
 
             float normalizedProgress = 0f;
@@ -97,6 +109,11 @@ namespace HoloToolkit.MRDL.PeriodicTable
             {
                 // Wait to be told to return
                 yield return null;
+            }
+
+            foreach (Transform child in parent.transform)
+            {
+                child.gameObject.SetActive(true);
             }
 
             // Move back to our initial position

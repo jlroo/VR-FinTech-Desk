@@ -7,8 +7,8 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Text;
 using System.Text.RegularExpressions;
-//using System.Text.Json;
-//using System.Text.Json.Serialization;
+// using System.Text.Json;
+// using System.Text.Json.Serialization;
 using System;
 
 using UnityEngine;
@@ -389,20 +389,20 @@ namespace HoloToolkit.MRDL.PeriodicTable
 
             int counter = 0; 
             foreach (CompanyName companyName in companyNames) {
-              Debug.Log("COMPANY NAME: " + companyName.news_name);
+              // Debug.Log("COMPANY NAME: " + companyName.news_name);
 
               if (counter < 5) {
                 string newsData = GetDataFromAPI(NEWS_DATA_URL_FRONT + companyName.news_name + NEWS_DATA_URL_BACK);
                 string stockData = GetDataFromAPI(STOCK_DATA_URL_FRONT + companyName.stock_name + STOCK_DATA_URL_BACK);
 
                 CompanyData companyData = new CompanyData(companyName.news_name, newsData, stockData, companyNames.Count, typeMaterialsCounts);
-                Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
+                // Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
                 allCompanyData.Add(companyData);
 
               } else { // Create a dummy object for now 
                 CompanyData companyData = new CompanyData(companyNames.Count, typeMaterialsCounts);
                 allCompanyData.Add(companyData);
-                Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
+                // Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
               }
               counter++;
             }
