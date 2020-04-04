@@ -465,10 +465,11 @@ namespace HoloToolkit.MRDL.PeriodicTable
 
             // TODO change elements to CompanyData
             if (isFirstRun == true)
-            {
+            { Debug.Log("FIRST RUN");
                 // Insantiate the element prefabs in their correct locations and with correct text
                 foreach (CompanyData element in allCompanyData)
                 {
+                    Debug.Log("INSTANTIATING");
                     GameObject newElement = Instantiate<GameObject>(ElementPrefab, Parent);
                     newElement.GetComponentInChildren<Element>().SetFromElementData(element, typeMaterials);
                     newElement.transform.localPosition = new Vector3(element.xpos * ElementSeperationDistance - ElementSeperationDistance * 18 / 2, ElementSeperationDistance * 9 - element.ypos * ElementSeperationDistance, 2.0f);
@@ -478,7 +479,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
                 isFirstRun = false;
             }
             else
-            {
+            { Debug.Log("NOT FIRST RUN");
                 int i = 0;
                 // Update position and data of existing element objects
                 foreach(Transform existingElementObject in Parent)

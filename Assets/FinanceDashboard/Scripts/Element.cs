@@ -44,7 +44,8 @@ namespace HoloToolkit.MRDL.PeriodicTable
         private Material clearMaterial;
         private PresentToPlayer present;
 
-        public ChartAndGraph.GraphChart graph; 
+        public GameObject graph;
+        //public ChartAndGraph.GraphChart graph; 
         public static int counter = 0;
 
         public void SetActiveElement()
@@ -62,8 +63,8 @@ namespace HoloToolkit.MRDL.PeriodicTable
         {
             Debug.Log("COUNTER: " + counter);
             counter++;
-            graph = GetComponent<ChartAndGraph.GraphChart>();
-            if (graph == null) Debug.Log("GRAPH IS NULL"); Debug.Log("GRAPH ISN'T NULL");
+            //graph = GetComponent<ChartAndGraph.GraphChart>();
+            if (graph == null) Debug.Log("GRAPH IS NULL"); else Debug.Log("GRAPH ISN'T NULL");
 
             // Turn off our animator until it's needed
             GetComponent<Animator>().enabled = false;
@@ -146,6 +147,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
          */
         public void SetFromElementData(CompanyData data, Dictionary<string, Material> typeMaterials)
         {
+            Debug.Log("CALLING SET FROM ELEMENT DATA!!!");
             this.data = data;
             ElementName.text = data.name;
 
@@ -153,10 +155,27 @@ namespace HoloToolkit.MRDL.PeriodicTable
 
             // EVERYTHING IN THE RHS
             // DataAtomicNumber.text = data.number;
-            DataAtomicWeight.text = data.atomic_mass.ToString();
-            DataMeltingPoint.text = data.melt.ToString();
-            DataBoilingPoint.text = data.boil.ToString();
- 
+            //DataAtomicWeight.text = data.atomic_mass.ToString();
+            //DataMeltingPoint.text = data.melt.ToString();
+            //DataBoilingPoint.text = data.boil.ToString();
+        /*if (graph == null) 
+        {
+            graph = GetComponent<ChartAndGraph.GraphChart>();
+            if (graph == null) Debug.Log("GRAPH IS STILL NULL"); else Debug.Log("GRAPH ISN'T NULL ANYMORE");
+        }
+        
+            graph.DataSource.StartBatch();  // start a new update batch
+            graph.DataSource.ClearCategory("Player 1");  // clear the categories we have created in the inspector
+            graph.DataSource.ClearCategory("Player 2");
+            for (int i = 0; i < 30; i++)
+            {
+//add 30 random points , each with a category and an x,y value
+                graph.DataSource.AddPointToCategory("Player 1",Random.value*10f,Random.value*10f);
+                graph.DataSource.AddPointToCategory("Player 2", Random.value * 10f, Random.value * 10f);
+            }
+            graph.DataSource.EndBatch(); // end the update batch . this call will render the graph
+            Debug.Log("UPDATED THE GRAPH");
+ */
             // Set up our materials
             if (!typeMaterials.TryGetValue(data.category.Trim(), out dimMaterial))
             {
