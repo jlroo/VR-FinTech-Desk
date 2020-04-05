@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
 namespace HoloToolkit.MRDL.PeriodicTable
 {
@@ -31,6 +32,9 @@ namespace HoloToolkit.MRDL.PeriodicTable
         public MeshRenderer[] InfoPanels;
 
         // public Atom Atom;
+
+
+        public RawImage logo;
 
         [HideInInspector]
         public ElementData data;
@@ -58,7 +62,6 @@ namespace HoloToolkit.MRDL.PeriodicTable
             GetComponent<Animator>().enabled = false;
             BoxRenderer.enabled = true;
             present = GetComponent<PresentToPlayer>();
-
         }
 
         public void Open()
@@ -78,6 +81,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
             {
                 PanelSides[i].sharedMaterial = highlightMaterial;
             }
+
             PanelBack.sharedMaterial = highlightMaterial;
             PanelFront.sharedMaterial = highlightMaterial;
             BoxRenderer.sharedMaterial = highlightMaterial;
@@ -131,12 +135,25 @@ namespace HoloToolkit.MRDL.PeriodicTable
         }
 
 
+        IEnumerator DownloadImage(string MediaUrl)
+        {
+            UnityWebRequest request = UnityWebRequestTexture.GetTexture(MediaUrl);
+            yield return request.SendWebRequest();
+            if (request.isNetworkError || request.isHttpError)
+                Debug.Log(request.error);
+            else
+                logo.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+        }
+
         /**
          * Set the display data for this element based on the given parsed JSON data
          */
         public void SetFromElementData(ElementData data, Dictionary<string, Material> typeMaterials)
         {
             this.data = data;
+
+            string placeholder = "https://cdn.vox-cdn.com/thumbor/Pkmq1nm3skO0-j693JTMd7RL0Zk=/0x0:2012x1341/1200x800/filters:focal(0x0:2012x1341)/cdn.vox-cdn.com/uploads/chorus_image/image/47070706/google2.0.0.jpg";
+            StartCoroutine(DownloadImage(placeholder));
 
             ElementNumber.text = data.number;
             ElementName.text = data.symbol;
