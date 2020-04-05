@@ -372,7 +372,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
 
         private void GetRealTimeData() {
             // Parse the elements out of the json file
-            string COMPANY_NAMES = "JSON/companies"; 
+            string COMPANY_NAMES = "JSON/companies";
             TextAsset companyNamesAsset = Resources.Load<TextAsset>(COMPANY_NAMES);
             List<CompanyName> companyNames = CompanyNames.FromJSON(companyNamesAsset.text).names;
 

@@ -1,0 +1,22 @@
+﻿<Properties StartupConfiguration="{3AC3692F-8DF8-D141-7A21-6D3B9C99BA17}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/FinanceDashboard/Scripts/Element.cs">
+    <Files>
+      <File FileName="Assets/FinanceDashboard/Scripts/Element.cs" Line="10" Column="30" />
+      <File FileName="Assets/FinanceDashboard/Scripts/OptimizeSceneforDeviceType.cs" Line="13" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Financial_VR" expanded="True" selected="True" />
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="d3e7d8df-907c-45d9-a3a0-94c73e8a9aa5" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
