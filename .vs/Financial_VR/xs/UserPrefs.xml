@@ -1,7 +1,7 @@
 ﻿<Properties StartupConfiguration="{3AC3692F-8DF8-D141-7A21-6D3B9C99BA17}|">
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/FinanceDashboard/Scripts/Element.cs">
     <Files>
-      <File FileName="Assets/FinanceDashboard/Scripts/Element.cs" Line="10" Column="30" />
+      <File FileName="Assets/FinanceDashboard/Scripts/Element.cs" Line="148" Column="10" />
       <File FileName="Assets/FinanceDashboard/Scripts/OptimizeSceneforDeviceType.cs" Line="13" Column="1" />
     </Files>
     <Pads>
