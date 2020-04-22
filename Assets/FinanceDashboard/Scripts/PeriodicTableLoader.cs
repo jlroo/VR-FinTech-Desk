@@ -254,8 +254,8 @@ namespace HoloToolkit.MRDL.PeriodicTable
       }
       
       public string toString() { // Debugging
-        // return "news: " + allNews.toString() + "\nstock: " + allStock.toString() + "\nkey: " + category;
-        return "key: " + category;
+        return "news: " + allNews.toString() + "\nstock: " + allStock.toString() + "\nkey: " + category;
+        //return "key: " + category;
       }
     }
 

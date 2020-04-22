@@ -142,8 +142,14 @@ namespace HoloToolkit.MRDL.PeriodicTable
          */
         public void SetFromElementData(CompanyData data, Dictionary<string, Material> typeMaterials)
         {
-            //Debug.Log("SETTING FROM ELEMENT DATA");
+            Debug.Log("SETTING FROM ELEMENT DATA");
             this.data = data;
+
+            // NOTE we don't want to initialize a graph when we open it, we want to do it at the very beginning
+            dataPlotter.shouldInitializeGraph = true; // TODO update when updating the data 
+            dataPlotter.currentStockData = data.allStock;
+            dataPlotter.name = data.name;
+
             // ElementNumber.text = data.number;
             ElementName.text = data.name;
             ElementNameDetail.text = data.name;
