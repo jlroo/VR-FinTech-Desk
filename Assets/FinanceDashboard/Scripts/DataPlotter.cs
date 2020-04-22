@@ -5,6 +5,7 @@ using System;
 using HoloToolkit.MRDL.PeriodicTable;
 using System.Text;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 public class DataPlotter : MonoBehaviour {
 
@@ -32,7 +33,7 @@ public class DataPlotter : MonoBehaviour {
 
   // Initialize only when the data is upated in real time and not once per frame
   public bool shouldInitializeGraph;
-  
+
   public AllStock currentStockData; 
 
   /*public float xMin = 0.0f;
@@ -63,10 +64,10 @@ public class DataPlotter : MonoBehaviour {
     // Set pointlist to results of function Reader with argument inputfile
     /*rawDataList = new List<List<float>>(); //CSVReader.Read(inputfile);
 
-    rawDataList.Add(new List<float> { 1.0f, 2.0f});
-    rawDataList.Add(new List<float> { 2.0f, 3.0f});
-    rawDataList.Add(new List<float> { 3.0f, 4.0f});
-    rawDataList.Add(new List<float> { 4.0f, 5.0f});*/
+      rawDataList.Add(new List<float> { 1.0f, 2.0f});
+      rawDataList.Add(new List<float> { 2.0f, 3.0f});
+      rawDataList.Add(new List<float> { 3.0f, 4.0f});
+      rawDataList.Add(new List<float> { 4.0f, 5.0f});*/
   }
 
   public void Update() {
@@ -116,11 +117,11 @@ public class DataPlotter : MonoBehaviour {
       float x = 
         (System.Convert.ToSingle(rawDataList[i][0]) - xMin)
         / (xMax - xMin);
-      
+
       float y = 
         (System.Convert.ToSingle(rawDataList[i][1]) - yMin)
         / (yMax - yMin);
-      
+
       // Instantiate as gameobject variable so that it can be manipulated within loop
       GameObject dataPoint = Instantiate(
           PointPrefab, 
@@ -179,6 +180,18 @@ public class DataPlotter : MonoBehaviour {
   }
 
   private void ParseRawPricesData(string rawPricesData) {			
+    Debug.Log("raw prices data: " + rawPricesData);
+
+    if (rawPricesData == "DUMMY_INTERVAL"){
+      rawDataList = new List<List<float>>(); //CSVReader.Read(inputfile);
+
+      rawDataList.Add(new List<float> { 1.0f, 2.0f});
+      rawDataList.Add(new List<float> { 2.0f, 3.0f});
+      rawDataList.Add(new List<float> { 3.0f, 4.0f});
+      rawDataList.Add(new List<float> { 4.0f, 5.0f});
+      return;
+    }
+
     int start_ind = rawPricesData.IndexOf("[{") + 2;
     rawPricesData = rawPricesData.Substring(start_ind);
 
@@ -186,7 +199,7 @@ public class DataPlotter : MonoBehaviour {
     List<DateTime> timestampsList = new List<DateTime>(); 
     List<Dictionary<string, float>> parsedDataList = new List<Dictionary<string, float>>(); 
 
-    string graphDataKey = "close";
+    string graphDataKey = "close"; // TODO 4. portion is pretty hard-coded
 
     foreach (string timestampBlock in rawPricesData.Split('}')) {
       var splitBlock = timestampBlock.Split('{');
@@ -195,6 +208,9 @@ public class DataPlotter : MonoBehaviour {
       }
       string timestamp = splitBlock[0];
       string dataAtTimestamp = splitBlock[1];			
+
+      Debug.Log("timestamp: " + timestamp);
+      Debug.Log("data: " + dataAtTimestamp);
 
       timestampsList.Add(ParseTimestamp(timestamp));
       parsedDataList.Add(ParseDataAtTimestamp(dataAtTimestamp));
@@ -211,27 +227,30 @@ public class DataPlotter : MonoBehaviour {
   }
 
   private static DateTime ParseTimestamp(string timestamp) {
-    timestamp = timestamp.Trim();
-    if (timestamp[0] == ',') {
-      timestamp = timestamp.Substring(2);
+    Regex r = new Regex(@"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}");
+    Match m = r.Match(timestamp);//"\"2020-04-21 16:00:00\"");
+    if(m.Success){
+      return DateTime.ParseExact(m.Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+    } else {
+      throw new System.ArgumentException("Timestamp was parsed incorrectly","timestamp");
     }
-    if (timestamp[timestamp.Length - 1] == ':') {
-      timestamp = timestamp.Substring(0, timestamp.Length - 1);
-    }
-    return DateTime.Parse(timestamp); //DateTime.ParseExact("2020-04-21 16:00:00", "yyyy-MM-dd hh:mm:ss", CultureInfo.InvariantCulture);
   }
 
   private static Dictionary<string, float> ParseDataAtTimestamp(string dataAtTimestamp) {
     Dictionary<string, float> parsedTimestampData = new Dictionary<string, float>();
     foreach (string pricePair in dataAtTimestamp.Split(',')){
-      //Console.WriteLine(pricePair);
-      var splitData = pricePair.Split(':');
-      if (splitData.Length != 2){
-        break;
-      }
-      string dataTag = splitData[0].Split(' ')[1].Split(':')[0];
-      float price = float.Parse(splitData[1], System.Globalization.CultureInfo.InvariantCulture);
-      parsedTimestampData.Add(dataTag, price);
+
+      Regex keyRegex = new Regex(@"[a-zA-Z]+");
+      Match keyMatch = keyRegex.Match(pricePair);
+      Debug.Log(keyMatch.Value);
+      string key = keyMatch.Value;
+
+      Regex priceRegex = new Regex(@"\d+.\d+");
+      Match priceMatch = priceRegex.Match(pricePair);
+      Debug.Log(priceMatch.Value);
+
+      float price = float.Parse(priceMatch.Value, System.Globalization.CultureInfo.InvariantCulture);
+      parsedTimestampData.Add(key, price);
     }
     return parsedTimestampData;
   }
