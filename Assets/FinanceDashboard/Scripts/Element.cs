@@ -31,6 +31,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
         public MeshRenderer[] InfoPanels;
 
         public Atom Atom;
+        public DataPlotter dataPlotter; 
 
         [HideInInspector]
         public CompanyData data;
@@ -64,6 +65,9 @@ namespace HoloToolkit.MRDL.PeriodicTable
         {
             if (present.Presenting)
                 return;
+
+            dataPlotter.shouldDisplayGraph = true;
+            Debug.Log("data plotter.test: " + dataPlotter.shouldDisplayGraph + " " + data.name);
 
             StartCoroutine(UpdateActive());
         }
@@ -127,6 +131,9 @@ namespace HoloToolkit.MRDL.PeriodicTable
             // Return the item to its original position
             present.Return();
             Dim();
+
+            dataPlotter.shouldDisplayGraph = false;
+            Debug.Log("data plotter.test: " + dataPlotter.shouldDisplayGraph + " " + data.name);
         }
 
 
@@ -135,7 +142,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
          */
         public void SetFromElementData(CompanyData data, Dictionary<string, Material> typeMaterials)
         {
-            Debug.Log("SETTING FROM ELEMENT DATA");
+            //Debug.Log("SETTING FROM ELEMENT DATA");
             this.data = data;
             // ElementNumber.text = data.number;
             ElementName.text = data.name;
