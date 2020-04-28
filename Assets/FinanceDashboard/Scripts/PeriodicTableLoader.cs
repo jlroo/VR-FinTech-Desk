@@ -166,6 +166,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
 
       // NOTE using news_name (doesn't rlly matter whether we use stock_name or news_name)
       public string name;
+      public string ticker_name;
 
       public int xpos; // From PeriodTableJSON.json -- value from 1 to 6 inclusive
       public static int xPosCurrVal = 1; // 1 - 6 inclusive
@@ -202,14 +203,17 @@ namespace HoloToolkit.MRDL.PeriodicTable
 
       public CompanyData(int numCompanies, Dictionary<string, int> typeMaterialsCounts) { 
         this.name = "DUMMY_COMPANY";
+        this.ticker_name = "DMCMPY";
+
         allNews = new AllNews();
         allStock = new AllStock();
         setXYPositions(numCompanies);
         setCategory(typeMaterialsCounts);
       }
 
-      public CompanyData(string name, string newsJson, string stockJson, int numCompanies, Dictionary<string, int> typeMaterialsCounts) {
+      public CompanyData(string name, string ticker_name, string newsJson, string stockJson,int numCompanies, Dictionary<string, int> typeMaterialsCounts) {
         this.name = name;
+        this.ticker_name = ticker_name;
         allNews = AllNews.FromJSON(newsJson);
         allStock = AllStock.FromJSON(stockJson);
         setXYPositions(numCompanies);  
@@ -327,7 +331,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
         public Material MatLanthanide;
 
         // Stores list of parsed company data from APIs
-        private List <CompanyData> allCompanyData;
+        public static List <CompanyData> allCompanyData;
 
         private Dictionary<string, Material> typeMaterials;
         // This is a HARD-CODED dictionary that stores the frequencies of categories corresponding 
@@ -395,7 +399,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
                 string newsData = GetDataFromAPI(NEWS_DATA_URL_FRONT + companyName.news_name + NEWS_DATA_URL_BACK);
                 string stockData = GetDataFromAPI(STOCK_DATA_URL_FRONT + companyName.stock_name + STOCK_DATA_URL_BACK);
 
-                CompanyData companyData = new CompanyData(companyName.news_name, newsData, stockData, companyNames.Count, typeMaterialsCounts);
+                CompanyData companyData = new CompanyData(companyName.news_name, companyName.stock_name, newsData, stockData, companyNames.Count, typeMaterialsCounts);
                 // Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
                 allCompanyData.Add(companyData);
 

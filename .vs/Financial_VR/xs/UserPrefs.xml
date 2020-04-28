@@ -1,10 +1,9 @@
 ﻿<Properties StartupConfiguration="{3AC3692F-8DF8-D141-7A21-6D3B9C99BA17}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Chart And Graph/Tutorials/Graph/GraphChartFeed.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/FinanceDashboard/Scripts/Element.cs">
     <Files>
-      <File FileName="Assets/FinanceDashboard/Scripts/JsonHelper.cs" Line="35" Column="1" />
-      <File FileName="Assets/Chart And Graph/Script/GraphChart/GraphData.cs" Line="176" Column="1" />
-      <File FileName="Assets/GraphController.cs" Line="58" Column="10" />
-      <File FileName="Assets/Chart And Graph/Tutorials/Graph/GraphChartFeed.cs" Line="39" Column="6" />
+      <File FileName="Assets/GraphController.cs" Line="31" Column="14" />
+      <File FileName="Assets/FinanceDashboard/Scripts/PeriodicTableLoader.cs" Line="137" Column="26" />
+      <File FileName="Assets/FinanceDashboard/Scripts/Element.cs" Line="160" Column="16" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -18,7 +17,7 @@
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="b7b1793d-0fd3-41ad-86de-a78d001ae6ee" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="e6a2789c-badf-4da8-9a06-e2938ca62d7b" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
