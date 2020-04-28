@@ -299,6 +299,7 @@
     <Compile Include="Assets\FinanceDashboard\Scripts\OptimizeSceneforDeviceType.cs" />
     <Compile Include="Assets\FinanceDashboard\Scripts\PeriodicTableLoader.cs" />
     <Compile Include="Assets\FinanceDashboard\Scripts\PresentToPlayer.cs" />
+    <Compile Include="Assets\GraphController.cs" />
     <Compile Include="Assets\Trading Simulator\Scripts\checkResizeRectTansform.cs" />
     <Compile Include="Assets\Trading Simulator\Scripts\GenerateDataStream.cs" />
     <Compile Include="Assets\Trading Simulator\Scripts\OverLine.cs" />

@@ -166,7 +166,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
             string placeholder = "https://logo.clearbit.com/" + name + ".com";
             StartCoroutine(DownloadImage(placeholder));
 
-            ElementDescription.text = "Placeholder"; //data.allNews.articles[0].toString(); // TODO change to news
+            ElementDescription.text = data.allNews.articles[0].toString(); // TODO change to news
             // DataAtomicNumber.text = data.number;
             DataAtomicWeight.text = data.atomic_mass.ToString();
             DataMeltingPoint.text = data.melt.ToString();
