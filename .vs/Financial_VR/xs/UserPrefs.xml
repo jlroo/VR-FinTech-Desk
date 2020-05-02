@@ -1,9 +1,9 @@
 ﻿<Properties StartupConfiguration="{3AC3692F-8DF8-D141-7A21-6D3B9C99BA17}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/FinanceDashboard/Scripts/Element.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/FinanceDashboard/Scripts/PeriodicTableLoader.cs">
     <Files>
-      <File FileName="Assets/GraphController.cs" Line="31" Column="14" />
-      <File FileName="Assets/FinanceDashboard/Scripts/PeriodicTableLoader.cs" Line="137" Column="26" />
-      <File FileName="Assets/FinanceDashboard/Scripts/Element.cs" Line="160" Column="16" />
+      <File FileName="Assets/GraphController.cs" Line="38" Column="10" />
+      <File FileName="Assets/FinanceDashboard/Scripts/PeriodicTableLoader.cs" Line="390" Column="1" />
+      <File FileName="Assets/FinanceDashboard/Scripts/Element.cs" Line="19" Column="24" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
