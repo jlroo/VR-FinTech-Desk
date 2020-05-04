@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
 namespace HoloToolkit.MRDL.PeriodicTable
 {
@@ -14,7 +15,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
     {
         public static Element ActiveElement;
 
-        public TextMesh ElementNumber;
+        // public TextMesh ElementNumber;
         public TextMesh ElementName;
         public TextMesh ElementNameDetail;
 
@@ -30,7 +31,9 @@ namespace HoloToolkit.MRDL.PeriodicTable
         public MeshRenderer PanelBack;
         public MeshRenderer[] InfoPanels;
 
-        public Atom Atom;
+        public RawImage logo;
+
+        // public Atom Atom;
 
         [HideInInspector]
         public CompanyData data;
@@ -129,6 +132,21 @@ namespace HoloToolkit.MRDL.PeriodicTable
             Dim();
         }
 
+        /* Downloads the image from the URL to populate the texture of the rawimage for each ticker
+         *
+         *
+         */
+
+        IEnumerator DownloadImage(string MediaUrl)
+        {
+            UnityWebRequest request = UnityWebRequestTexture.GetTexture(MediaUrl);
+            yield return request.SendWebRequest();
+            if (request.isNetworkError || request.isHttpError)
+                Debug.Log(request.error);
+            else
+                logo.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+        }
+
 
         /**
          * Set the display data for this element based on the given parsed JSON data
@@ -136,15 +154,22 @@ namespace HoloToolkit.MRDL.PeriodicTable
         public void SetFromElementData(CompanyData data, Dictionary<string, Material> typeMaterials)
         {
             this.data = data;
+
             // ElementNumber.text = data.number;
             ElementName.text = data.name;
-            ElementNameDetail.text = data.name;
+            ElementNameDetail.text = data.ticker_name;
+
+            // A messy hack for now
+            string name = data.name.Trim().ToLower();
+            Debug.Log(name);
+            string placeholder = "https://logo.clearbit.com/" + name + ".com";
+            StartCoroutine(DownloadImage(placeholder));
 
             ElementDescription.text = data.allNews.articles[0].toString(); // TODO change to news
-            // DataAtomicNumber.text = data.number;
-            DataAtomicWeight.text = data.atomic_mass.ToString();
-            DataMeltingPoint.text = data.melt.ToString();
-            DataBoilingPoint.text = data.boil.ToString();
+            DataAtomicNumber.text = data.allStock.currentPrice.ToString(); // Current price
+            DataAtomicWeight.text = data.allStock.highPrice.ToString(); // High
+            DataMeltingPoint.text = data.allStock.lowPrice.ToString(); // Low
+            DataBoilingPoint.text = data.allNews.articles[0].toString(); // Headline
             
             // Set up our materials
             if (!typeMaterials.TryGetValue(data.category.Trim(), out dimMaterial))

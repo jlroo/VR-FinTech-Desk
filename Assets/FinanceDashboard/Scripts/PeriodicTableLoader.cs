@@ -10,6 +10,9 @@ using System.Text.RegularExpressions;
 // using System.Text.Json;
 // using System.Text.Json.Serialization;
 using System;
+using System.Text;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 using UnityEngine;
 using UnityEngine.Networking;
@@ -70,6 +73,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
       }
 
       public static AllNews FromJSON(string json) {
+        // Debug.Log("JSON: " + json);
         AllNews allNews = JsonUtility.FromJson<AllNews>(json);
         // return JsonSerializer.Deserialize<AllNews>(json);
         // TODO allNews.articles.Take(num_articles);
@@ -125,7 +129,11 @@ namespace HoloToolkit.MRDL.PeriodicTable
       // because the data returned has timestamps as keys (meaning that all the keys
       // are different and we can't serach by keys) 
       public string data_intervals; 
-      
+      public List<List<float>> rawDataList;     
+      public float highPrice; // Max out of all high prices
+      public float lowPrice; // Min out of all low prices
+      public float currentPrice; // Last open price
+ 
       public AllStock() {
         metadata = new MetaData();
         data_intervals = "DUMMY_INTERVAL"; // TODO turn into real json data for graph gen!!
@@ -147,7 +155,106 @@ namespace HoloToolkit.MRDL.PeriodicTable
 
         // Breaking JSON string into different portions to make parsing work 
         allStock.data_intervals = JsonHelper.GetJsonObject(json, "data_intervals");
+        allStock.ParseRawPricesData(allStock.data_intervals);
         return allStock;
+      }
+
+      // Parses the raw JSON string into graphable data 
+      private void ParseRawPricesData(string rawPricesData) {
+          // If we don't have data for the stock
+          if (rawPricesData == "DUMMY_INTERVAL")
+          {
+              rawDataList = new List<List<float>>(); //CSVReader.Read(inputfile);
+
+              rawDataList.Add(new List<float> { 1.0f, 2.0f });
+              rawDataList.Add(new List<float> { 2.0f, 3.0f });
+              rawDataList.Add(new List<float> { 3.0f, 4.0f });
+              rawDataList.Add(new List<float> { 4.0f, 5.0f });
+              return;
+          }
+
+          int start_ind = rawPricesData.IndexOf("[{") + 2;
+          rawPricesData = rawPricesData.Substring(start_ind);
+
+          // Need to create a new list because we want to compute all the times relative to the starting time
+          List<DateTime> timestampsList = new List<DateTime>();
+          List<Dictionary<string, float>> parsedDataList = new List<Dictionary<string, float>>();
+
+          string graphDataKey = "open"; // TODO 4. portion is pretty hard-coded
+          string dataHighKey = "high";
+          string dataLowKey = "low";
+
+          foreach (string timestampBlock in rawPricesData.Split('}'))
+          {
+              var splitBlock = timestampBlock.Split('{');
+              if (splitBlock.Length != 2)
+              {
+                  break;
+              }
+              string timestamp = splitBlock[0];
+              string dataAtTimestamp = splitBlock[1];
+
+              //Debug.Log("timestamp: " + timestamp);
+              //Debug.Log("data: " + dataAtTimestamp);
+
+              timestampsList.Add(ParseTimestamp(timestamp));
+              parsedDataList.Add(ParseDataAtTimestamp(dataAtTimestamp));
+          }
+
+          // NOTE we don't actually need to use this Dictionary<double, object> parsedData = new Dictionary<double, object>();
+          rawDataList = new List<List<float>>();
+          rawDataList.Add(new List<float> {0, parsedDataList[timestampsList.Count - 1][graphDataKey]}); // time, price
+
+          highPrice = Math.Max(0.0f, parsedDataList[timestampsList.Count - 1][dataHighKey]); 
+          lowPrice = Math.Min(float.PositiveInfinity, parsedDataList[timestampsList.Count - 1][dataLowKey]); 
+          currentPrice = parsedDataList[timestampsList.Count - 1][graphDataKey];
+
+          for (int i = timestampsList.Count - 2; i >= 0; i--)
+          {
+
+              float timeInMinutes = Convert.ToSingle(timestampsList[i].Subtract(timestampsList[timestampsList.Count - 1]).TotalMinutes);
+              if (timeInMinutes <= 420)
+              {
+                  rawDataList.Add(new List<float> { timeInMinutes, parsedDataList[i][graphDataKey] }); // time, price
+                  highPrice = Math.Max(highPrice, parsedDataList[i][dataHighKey]);
+                  lowPrice = Math.Min(lowPrice, parsedDataList[i][dataLowKey]);
+              }
+          }
+          Debug.Log("high price: " + highPrice);
+          Debug.Log("low price: " + lowPrice);
+      }
+
+      private static DateTime ParseTimestamp(string timestamp) {
+          Regex r = new Regex(@"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}");
+          Match m = r.Match(timestamp);//"\"2020-04-21 16:00:00\"");
+          if (m.Success)
+          {
+              return DateTime.ParseExact(m.Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+          }
+          else
+          {
+              throw new System.ArgumentException("Timestamp was parsed incorrectly", "timestamp");
+          }
+      }
+
+      private static Dictionary<string, float> ParseDataAtTimestamp(string dataAtTimestamp) {
+          Dictionary<string, float> parsedTimestampData = new Dictionary<string, float>();
+          foreach (string pricePair in dataAtTimestamp.Split(','))
+          {
+
+              Regex keyRegex = new Regex(@"[a-zA-Z]+");
+              Match keyMatch = keyRegex.Match(pricePair);
+              //Debug.Log(keyMatch.Value);
+              string key = keyMatch.Value;
+
+              Regex priceRegex = new Regex(@"\d+.\d+");
+              Match priceMatch = priceRegex.Match(pricePair);
+              //Debug.Log(priceMatch.Value);
+
+              float price = float.Parse(priceMatch.Value, System.Globalization.CultureInfo.InvariantCulture);
+              parsedTimestampData.Add(key, price);
+          }
+          return parsedTimestampData;
       }
 
       public string toString() { // Debugging
@@ -166,6 +273,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
 
       // NOTE using news_name (doesn't rlly matter whether we use stock_name or news_name)
       public string name;
+      public string ticker_name;
 
       public int xpos; // From PeriodTableJSON.json -- value from 1 to 6 inclusive
       public static int xPosCurrVal = 1; // 1 - 6 inclusive
@@ -183,33 +291,20 @@ namespace HoloToolkit.MRDL.PeriodicTable
       public static int currKeyCounter = 1; // 1 - typeMaterials.Count
       public static int currCategoryCounter = 1; // 1 - typeMaterials.Count
 
-        public string spectral_img = "spectral";
-        public string named_by = "named_by";
-        public float density = 1.0f;
-        public string color = "color";
-        public float molar_heat = 1.0f;
-        // public string symbol = "asfd";
-        public string discovered_by = "disc_by";
-        public string appearance = "app";
-        public float atomic_mass = 1.0f;
-        public float melt = 1.0f;
-        // public string number = "num";
-        public string source = "source";
-        public int period = 2;
-        public string phase = "phase";
-        public string summary = "summ";
-        public int boil = 3;
-
       public CompanyData(int numCompanies, Dictionary<string, int> typeMaterialsCounts) { 
         this.name = "DUMMY_COMPANY";
+        this.ticker_name = "DMCMPY";
+
         allNews = new AllNews();
         allStock = new AllStock();
         setXYPositions(numCompanies);
         setCategory(typeMaterialsCounts);
       }
 
-      public CompanyData(string name, string newsJson, string stockJson, int numCompanies, Dictionary<string, int> typeMaterialsCounts) {
+      public CompanyData(string name, string ticker_name, string newsJson, string stockJson,int numCompanies, Dictionary<string, int> typeMaterialsCounts) {
+        // Debug.Log("Name: " + name + ", all news: " + newsJson);
         this.name = name;
+        this.ticker_name = ticker_name;
         allNews = AllNews.FromJSON(newsJson);
         allStock = AllStock.FromJSON(stockJson);
         setXYPositions(numCompanies);  
@@ -327,7 +422,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
         public Material MatLanthanide;
 
         // Stores list of parsed company data from APIs
-        private List <CompanyData> allCompanyData;
+        public static List <CompanyData> allCompanyData;
 
         private Dictionary<string, Material> typeMaterials;
         // This is a HARD-CODED dictionary that stores the frequencies of categories corresponding 
@@ -372,13 +467,17 @@ namespace HoloToolkit.MRDL.PeriodicTable
 
         private void GetRealTimeData() {
             // Parse the elements out of the json file
-            string COMPANY_NAMES = "JSON/companies"; 
+            string COMPANY_NAMES = "JSON/companies";
             TextAsset companyNamesAsset = Resources.Load<TextAsset>(COMPANY_NAMES);
             List<CompanyName> companyNames = CompanyNames.FromJSON(companyNamesAsset.text).names;
 
+            // Get today's news
+            string current_date = DateTime.Now.ToString("yyyy-MM-dd");
+            Debug.Log("The current date is" + current_date);
+
             string NEWS_API_KEY = "c334b33f1acf4ba99b89dcc0bf595dd0";
             string NEWS_DATA_URL_FRONT = "http://newsapi.org/v2/everything?q="; // Concat name
-            string NEWS_DATA_URL_BACK = "&from=2020-03-29&sortBy=popularity&apiKey=" + NEWS_API_KEY;
+            string NEWS_DATA_URL_BACK = "&from=" + current_date + "&sortBy=popularity&apiKey=" + NEWS_API_KEY;
 
             string STOCK_API_KEY = "B8LDV7QLIQNLCG1Y";
             string STOCK_DATA_URL_FRONT = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol="; // Concat name 
@@ -392,11 +491,12 @@ namespace HoloToolkit.MRDL.PeriodicTable
               // Debug.Log("COMPANY NAME: " + companyName.news_name);
 
               if (counter < 5) {
+                Debug.Log("Query: " + NEWS_DATA_URL_FRONT + companyName.news_name + NEWS_DATA_URL_BACK);
                 string newsData = GetDataFromAPI(NEWS_DATA_URL_FRONT + companyName.news_name + NEWS_DATA_URL_BACK);
                 string stockData = GetDataFromAPI(STOCK_DATA_URL_FRONT + companyName.stock_name + STOCK_DATA_URL_BACK);
 
-                CompanyData companyData = new CompanyData(companyName.news_name, newsData, stockData, companyNames.Count, typeMaterialsCounts);
-                // Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
+                CompanyData companyData = new CompanyData(companyName.news_name, companyName.stock_name, newsData, stockData, companyNames.Count, typeMaterialsCounts);
+                Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
                 allCompanyData.Add(companyData);
 
               } else { // Create a dummy object for now 
@@ -495,4 +595,3 @@ namespace HoloToolkit.MRDL.PeriodicTable
         }
     }
 }
-
