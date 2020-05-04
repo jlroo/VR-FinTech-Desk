@@ -27,11 +27,6 @@ public class GraphController : MonoBehaviour
         GraphChartBase graphBase = GetComponent<GraphChartBase>();
         TextMesh textObject = elementName.GetComponent<TextMesh>();
 
-        if(textObject.text == "DUMMY_COMPANY")
-        {
-            return;
-        }
-
         foreach(CompanyData element in dataCopy)
         {
             Debug.Log(textObject.text);
@@ -44,11 +39,18 @@ public class GraphController : MonoBehaviour
 
         graphBase.DataSource.StartBatch();  // start a new update batch
 
-        // 9:30 AM in seconds from 12:00 AM
-        int start_time = (9*60 + 30)*60;
+        //for (int i = 0; i < 30; i++)
+        //{
+        //    //add 30 random points , each with a category and an x,y value
+        //    graphBase.DataSource.AddPointToCategory("Price", i, UnityEngine.Random.value * 10f);
+        //}
+
+
         foreach (List<float> dataPoint in rawDataList)
         {
-            graphBase.DataSource.AddPointToCategory("Price", start_time + 60*dataPoint[0], dataPoint[1]);
+            graphBase.DataSource.AddPointToCategory("Price", dataPoint[0], dataPoint[1]);
+            //Debug.Log(dataPoint[0]);
+            //Debug.Log(dataPoint[1]);
         }
 
         graphBase.DataSource.EndBatch(); // end the update batch . this call will render the graph

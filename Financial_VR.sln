@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.MixedReality.Toolkit.SDK", "Microsoft.MixedReality.Toolkit.SDK.csproj", "{05B14F7C-83E0-5D68-A60C-8A5FB021A3EE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.MixedReality.Toolkit.Providers.OpenVR", "Microsoft.MixedReality.Toolkit.Providers.OpenVR.csproj", "{C4E1E7EF-BCA7-AF79-94E0-1AA353E587EB}"
@@ -16,8 +16,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.MixedReality.Toolkit.Services.SceneSystem", "Microsoft.MixedReality.Toolkit.Services.SceneSystem.csproj", "{36F99D85-04F6-DB48-31B9-C0884DDA01D9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.MixedReality.Toolkit.Services.InputSystem", "Microsoft.MixedReality.Toolkit.Services.InputSystem.csproj", "{26E5FBE3-6A47-A939-81C2-FE3857078404}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.MixedReality.Toolkit.Providers.XRSDK.WindowsMixedReality", "Microsoft.MixedReality.Toolkit.Providers.XRSDK.WindowsMixedReality.csproj", "{E6C8EEB1-6962-79E6-F7DE-D0B06BF56439}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.MixedReality.Toolkit.Services.InputSimulation", "Microsoft.MixedReality.Toolkit.Services.InputSimulation.csproj", "{295168ED-4B02-6553-1E20-F486B3D0D951}"
 EndProject
@@ -36,8 +34,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.MixedReality.Toolkit.Providers.WindowsMixedReality.Shared", "Microsoft.MixedReality.Toolkit.Providers.WindowsMixedReality.Shared.csproj", "{FA32BBA3-DCBF-42FB-0EA4-0FC6AECB31BF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.MixedReality.Toolkit.Services.TeleportSystem", "Microsoft.MixedReality.Toolkit.Services.TeleportSystem.csproj", "{BF6A7A9E-2860-3268-8494-46D827001671}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.MixedReality.Toolkit.Providers.XRSDK", "Microsoft.MixedReality.Toolkit.Providers.XRSDK.csproj", "{38250508-177A-E38E-104E-8FEDAA4123E7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.MixedReality.Toolkit.Services.CameraSystem", "Microsoft.MixedReality.Toolkit.Services.CameraSystem.csproj", "{1C98B053-EA19-FC1D-0DC7-82BB4D2024AF}"
 EndProject
@@ -117,10 +113,6 @@ Global
 		{26E5FBE3-6A47-A939-81C2-FE3857078404}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26E5FBE3-6A47-A939-81C2-FE3857078404}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26E5FBE3-6A47-A939-81C2-FE3857078404}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E6C8EEB1-6962-79E6-F7DE-D0B06BF56439}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E6C8EEB1-6962-79E6-F7DE-D0B06BF56439}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E6C8EEB1-6962-79E6-F7DE-D0B06BF56439}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E6C8EEB1-6962-79E6-F7DE-D0B06BF56439}.Release|Any CPU.Build.0 = Release|Any CPU
 		{295168ED-4B02-6553-1E20-F486B3D0D951}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{295168ED-4B02-6553-1E20-F486B3D0D951}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{295168ED-4B02-6553-1E20-F486B3D0D951}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -157,10 +149,6 @@ Global
 		{BF6A7A9E-2860-3268-8494-46D827001671}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF6A7A9E-2860-3268-8494-46D827001671}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF6A7A9E-2860-3268-8494-46D827001671}.Release|Any CPU.Build.0 = Release|Any CPU
-		{38250508-177A-E38E-104E-8FEDAA4123E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{38250508-177A-E38E-104E-8FEDAA4123E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{38250508-177A-E38E-104E-8FEDAA4123E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{38250508-177A-E38E-104E-8FEDAA4123E7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1C98B053-EA19-FC1D-0DC7-82BB4D2024AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1C98B053-EA19-FC1D-0DC7-82BB4D2024AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C98B053-EA19-FC1D-0DC7-82BB4D2024AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -244,5 +232,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
 	EndGlobalSection
 EndGlobal
