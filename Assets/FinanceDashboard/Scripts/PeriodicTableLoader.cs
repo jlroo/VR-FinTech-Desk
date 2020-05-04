@@ -70,6 +70,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
       }
 
       public static AllNews FromJSON(string json) {
+        // Debug.Log("JSON: " + json);
         AllNews allNews = JsonUtility.FromJson<AllNews>(json);
         // return JsonSerializer.Deserialize<AllNews>(json);
         // TODO allNews.articles.Take(num_articles);
@@ -212,6 +213,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
       }
 
       public CompanyData(string name, string ticker_name, string newsJson, string stockJson,int numCompanies, Dictionary<string, int> typeMaterialsCounts) {
+        // Debug.Log("Name: " + name + ", all news: " + newsJson);
         this.name = name;
         this.ticker_name = ticker_name;
         allNews = AllNews.FromJSON(newsJson);
@@ -380,9 +382,13 @@ namespace HoloToolkit.MRDL.PeriodicTable
             TextAsset companyNamesAsset = Resources.Load<TextAsset>(COMPANY_NAMES);
             List<CompanyName> companyNames = CompanyNames.FromJSON(companyNamesAsset.text).names;
 
+            // Get today's news
+            string current_date = DateTime.Now.ToString("yyyy-MM-dd");
+            Debug.Log("The current date is" + current_date);
+
             string NEWS_API_KEY = "c334b33f1acf4ba99b89dcc0bf595dd0";
             string NEWS_DATA_URL_FRONT = "http://newsapi.org/v2/everything?q="; // Concat name
-            string NEWS_DATA_URL_BACK = "&from=2020-03-29&sortBy=popularity&apiKey=" + NEWS_API_KEY;
+            string NEWS_DATA_URL_BACK = "&from=" + current_date + "&sortBy=popularity&apiKey=" + NEWS_API_KEY;
 
             string STOCK_API_KEY = "B8LDV7QLIQNLCG1Y";
             string STOCK_DATA_URL_FRONT = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol="; // Concat name 
@@ -396,11 +402,12 @@ namespace HoloToolkit.MRDL.PeriodicTable
               // Debug.Log("COMPANY NAME: " + companyName.news_name);
 
               if (counter < 5) {
+                Debug.Log("Query: " + NEWS_DATA_URL_FRONT + companyName.news_name + NEWS_DATA_URL_BACK);
                 string newsData = GetDataFromAPI(NEWS_DATA_URL_FRONT + companyName.news_name + NEWS_DATA_URL_BACK);
                 string stockData = GetDataFromAPI(STOCK_DATA_URL_FRONT + companyName.stock_name + STOCK_DATA_URL_BACK);
 
                 CompanyData companyData = new CompanyData(companyName.news_name, companyName.stock_name, newsData, stockData, companyNames.Count, typeMaterialsCounts);
-                // Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
+                Debug.Log("COMPANY DATA, name: " + companyName.news_name + ", " + companyData.toString());
                 allCompanyData.Add(companyData);
 
               } else { // Create a dummy object for now 
