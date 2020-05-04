@@ -167,10 +167,10 @@ namespace HoloToolkit.MRDL.PeriodicTable
             StartCoroutine(DownloadImage(placeholder));
 
             ElementDescription.text = data.allNews.articles[0].toString(); // TODO change to news
-            // DataAtomicNumber.text = data.number;
-            DataAtomicWeight.text = data.atomic_mass.ToString();
-            DataMeltingPoint.text = data.melt.ToString();
-            DataBoilingPoint.text = data.boil.ToString();
+            DataAtomicNumber.text = data.allStock.currentPrice.ToString(); // Current price
+            DataAtomicWeight.text = data.allStock.highPrice.ToString(); // High
+            DataMeltingPoint.text = data.allStock.lowPrice.ToString(); // Low
+            DataBoilingPoint.text = data.allNews.articles[0].toString(); // Headline
             
             // Set up our materials
             if (!typeMaterials.TryGetValue(data.category.Trim(), out dimMaterial))

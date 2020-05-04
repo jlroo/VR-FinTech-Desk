@@ -130,6 +130,9 @@ namespace HoloToolkit.MRDL.PeriodicTable
       // are different and we can't serach by keys) 
       public string data_intervals; 
       public List<List<float>> rawDataList;     
+      public float highPrice; // Max out of all high prices
+      public float lowPrice; // Min out of all low prices
+      public float currentPrice; // Last open price
  
       public AllStock() {
         metadata = new MetaData();
@@ -202,8 +205,9 @@ namespace HoloToolkit.MRDL.PeriodicTable
           rawDataList = new List<List<float>>();
           rawDataList.Add(new List<float> {0, parsedDataList[timestampsList.Count - 1][graphDataKey]}); // time, price
 
-          float highPrice = 0.0f;
-          float lowPrice = float.PositiveInfinity;
+          highPrice = Math.Max(0.0f, parsedDataList[timestampsList.Count - 1][dataHighKey]); 
+          lowPrice = Math.Min(float.PositiveInfinity, parsedDataList[timestampsList.Count - 1][dataLowKey]); 
+          currentPrice = parsedDataList[timestampsList.Count - 1][graphDataKey];
 
           for (int i = timestampsList.Count - 2; i >= 0; i--)
           {
