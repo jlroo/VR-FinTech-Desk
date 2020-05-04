@@ -33,7 +33,7 @@ public class GraphController : MonoBehaviour
 
             if(element.name == textObject.text)
             {
-                ParseRawPricesData(element.allStock.data_intervals);
+                rawDataList = element.allStock.rawDataList; //ParseRawPricesData(element.allStock.data_intervals);
             }
         }
 

@@ -10,6 +10,9 @@ using System.Text.RegularExpressions;
 // using System.Text.Json;
 // using System.Text.Json.Serialization;
 using System;
+using System.Text;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 using UnityEngine;
 using UnityEngine.Networking;
@@ -126,7 +129,8 @@ namespace HoloToolkit.MRDL.PeriodicTable
       // because the data returned has timestamps as keys (meaning that all the keys
       // are different and we can't serach by keys) 
       public string data_intervals; 
-      
+      public List<List<float>> rawDataList;     
+ 
       public AllStock() {
         metadata = new MetaData();
         data_intervals = "DUMMY_INTERVAL"; // TODO turn into real json data for graph gen!!
@@ -148,7 +152,105 @@ namespace HoloToolkit.MRDL.PeriodicTable
 
         // Breaking JSON string into different portions to make parsing work 
         allStock.data_intervals = JsonHelper.GetJsonObject(json, "data_intervals");
+        allStock.ParseRawPricesData(allStock.data_intervals);
         return allStock;
+      }
+
+      // Parses the raw JSON string into graphable data 
+      private void ParseRawPricesData(string rawPricesData) {
+          // If we don't have data for the stock
+          if (rawPricesData == "DUMMY_INTERVAL")
+          {
+              rawDataList = new List<List<float>>(); //CSVReader.Read(inputfile);
+
+              rawDataList.Add(new List<float> { 1.0f, 2.0f });
+              rawDataList.Add(new List<float> { 2.0f, 3.0f });
+              rawDataList.Add(new List<float> { 3.0f, 4.0f });
+              rawDataList.Add(new List<float> { 4.0f, 5.0f });
+              return;
+          }
+
+          int start_ind = rawPricesData.IndexOf("[{") + 2;
+          rawPricesData = rawPricesData.Substring(start_ind);
+
+          // Need to create a new list because we want to compute all the times relative to the starting time
+          List<DateTime> timestampsList = new List<DateTime>();
+          List<Dictionary<string, float>> parsedDataList = new List<Dictionary<string, float>>();
+
+          string graphDataKey = "open"; // TODO 4. portion is pretty hard-coded
+          string dataHighKey = "high";
+          string dataLowKey = "low";
+
+          foreach (string timestampBlock in rawPricesData.Split('}'))
+          {
+              var splitBlock = timestampBlock.Split('{');
+              if (splitBlock.Length != 2)
+              {
+                  break;
+              }
+              string timestamp = splitBlock[0];
+              string dataAtTimestamp = splitBlock[1];
+
+              //Debug.Log("timestamp: " + timestamp);
+              //Debug.Log("data: " + dataAtTimestamp);
+
+              timestampsList.Add(ParseTimestamp(timestamp));
+              parsedDataList.Add(ParseDataAtTimestamp(dataAtTimestamp));
+          }
+
+          // NOTE we don't actually need to use this Dictionary<double, object> parsedData = new Dictionary<double, object>();
+          rawDataList = new List<List<float>>();
+          rawDataList.Add(new List<float> {0, parsedDataList[timestampsList.Count - 1][graphDataKey]}); // time, price
+
+          float highPrice = 0.0f;
+          float lowPrice = float.PositiveInfinity;
+
+          for (int i = timestampsList.Count - 2; i >= 0; i--)
+          {
+
+              float timeInMinutes = Convert.ToSingle(timestampsList[i].Subtract(timestampsList[timestampsList.Count - 1]).TotalMinutes);
+              if (timeInMinutes <= 420)
+              {
+                  rawDataList.Add(new List<float> { timeInMinutes, parsedDataList[i][graphDataKey] }); // time, price
+                  highPrice = Math.Max(highPrice, parsedDataList[i][dataHighKey]);
+                  lowPrice = Math.Min(lowPrice, parsedDataList[i][dataLowKey]);
+              }
+          }
+          Debug.Log("high price: " + highPrice);
+          Debug.Log("low price: " + lowPrice);
+      }
+
+      private static DateTime ParseTimestamp(string timestamp) {
+          Regex r = new Regex(@"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}");
+          Match m = r.Match(timestamp);//"\"2020-04-21 16:00:00\"");
+          if (m.Success)
+          {
+              return DateTime.ParseExact(m.Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+          }
+          else
+          {
+              throw new System.ArgumentException("Timestamp was parsed incorrectly", "timestamp");
+          }
+      }
+
+      private static Dictionary<string, float> ParseDataAtTimestamp(string dataAtTimestamp) {
+          Dictionary<string, float> parsedTimestampData = new Dictionary<string, float>();
+          foreach (string pricePair in dataAtTimestamp.Split(','))
+          {
+
+              Regex keyRegex = new Regex(@"[a-zA-Z]+");
+              Match keyMatch = keyRegex.Match(pricePair);
+              //Debug.Log(keyMatch.Value);
+              string key = keyMatch.Value;
+
+              Regex priceRegex = new Regex(@"\d+.\d+");
+              Match priceMatch = priceRegex.Match(pricePair);
+              //Debug.Log(priceMatch.Value);
+
+              float price = float.Parse(priceMatch.Value, System.Globalization.CultureInfo.InvariantCulture);
+              parsedTimestampData.Add(key, price);
+          }
+          return parsedTimestampData;
       }
 
       public string toString() { // Debugging
@@ -506,4 +608,3 @@ namespace HoloToolkit.MRDL.PeriodicTable
         }
     }
 }
-
