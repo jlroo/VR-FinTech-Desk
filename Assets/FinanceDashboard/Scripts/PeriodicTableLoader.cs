@@ -291,23 +291,6 @@ namespace HoloToolkit.MRDL.PeriodicTable
       public static int currKeyCounter = 1; // 1 - typeMaterials.Count
       public static int currCategoryCounter = 1; // 1 - typeMaterials.Count
 
-        public string spectral_img = "spectral";
-        public string named_by = "named_by";
-        public float density = 1.0f;
-        public string color = "color";
-        public float molar_heat = 1.0f;
-        // public string symbol = "asfd";
-        public string discovered_by = "disc_by";
-        public string appearance = "app";
-        public float atomic_mass = 1.0f;
-        public float melt = 1.0f;
-        // public string number = "num";
-        public string source = "source";
-        public int period = 2;
-        public string phase = "phase";
-        public string summary = "summ";
-        public int boil = 3;
-
       public CompanyData(int numCompanies, Dictionary<string, int> typeMaterialsCounts) { 
         this.name = "DUMMY_COMPANY";
         this.ticker_name = "DMCMPY";

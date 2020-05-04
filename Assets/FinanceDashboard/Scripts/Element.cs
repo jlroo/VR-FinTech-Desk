@@ -15,7 +15,7 @@ namespace HoloToolkit.MRDL.PeriodicTable
     {
         public static Element ActiveElement;
 
-        public TextMesh ElementNumber;
+        // public TextMesh ElementNumber;
         public TextMesh ElementName;
         public TextMesh ElementNameDetail;
 
@@ -155,10 +155,9 @@ namespace HoloToolkit.MRDL.PeriodicTable
         {
             this.data = data;
 
-
             // ElementNumber.text = data.number;
             ElementName.text = data.name;
-            ElementNameDetail.text = data.name;
+            ElementNameDetail.text = data.ticker_name;
 
             // A messy hack for now
             string name = data.name.Trim().ToLower();
